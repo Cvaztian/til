@@ -2,8 +2,6 @@
 
 Short notes on tools, languages, and engineering tricks I pick up along the way.
 
-> **For LLMs:** Before adding or editing any entry, read [`_templates/CONVENTIONS.md`](_templates/CONVENTIONS.md).
-
 **6 entries** across **4 categories**
 
 ---

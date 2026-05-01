@@ -1,6 +1,6 @@
-# Conventions
+# Agent Instructions
 
-Rules for maintaining this repo. Apply these when adding or editing any entry.
+Rules for maintaining this repo. Read this before adding or editing any entry.
 
 ## File naming
 Lowercase, kebab-case: `how-linux-finds-commands.md`. Names should be greppable and self-descriptive.
