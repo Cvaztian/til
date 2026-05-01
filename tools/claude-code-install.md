@@ -1,32 +1,16 @@
 # Installing Claude Code on Linux / WSL
 > **Tags:** `claude-code`, `install`, `curl`, `path`
 > **Date:** 2026-04-30
-> **Related:** [how-linux-finds-commands](../linux/how-linux-finds-commands.md), [bashrc-and-source](../linux/bashrc-and-source.md)
+> **Related:** [how-linux-finds-commands](../linux/how-linux-finds-commands.md), [bashrc-and-source](../linux/bashrc-and-source.md), [wsl-vs-windows-filesystems](../wsl/wsl-vs-windows-filesystems.md)
 
-Native installer (recommended, no dependencies):
+Install via the native installer (see [claude.ai/download](https://claude.ai/download) for the current command).
 
-```bash
-curl -fsSL https://claude.ai/install.sh | bash
-```
+The installer drops the binary in `~/.local/bin/claude`. Adding `~/.local/bin` to PATH is a one-time addition — any future tool that installs there will also just work, no extra PATH edits needed.
 
-The `curl` flags: `-f` fail silently, `-s` no progress bar, `-S` show errors, `-L` follow redirects.
+On the `curl -fsSL` flags you'll see in most install scripts:
+- `-f` — fail silently on HTTP errors (no junk output on 404)
+- `-s` — suppress progress bar
+- `-S` — but still show actual errors
+- `-L` — follow redirects
 
-The installer puts the binary in `~/.local/bin/claude`. You may need to add that directory to PATH:
-
-```bash
-echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc && source ~/.bashrc
-```
-
-This is a one-time PATH addition — any future tool installing to `~/.local/bin` will also just work.
-
-Alternative via npm (requires Node.js 18+):
-
-```bash
-npm install -g @anthropic-ai/claude-code
-```
-
-Requires: Claude Pro, Max, Team, Enterprise, or Console account. Free plan does not include Claude Code.
-
-On WSL: install and run from the WSL terminal, not PowerShell/CMD.
-
-Verify: `claude --version`
+Requires: Claude Pro, Max, Team, Enterprise, or Console account.

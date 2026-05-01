@@ -10,6 +10,8 @@ WSL runs a full Linux system inside Windows — separate filesystems, separate P
 - WSL can run Windows `.exe` files (e.g., `notepad.exe`, `explorer.exe .`), but that's running the Windows binary through Windows, not a shared install.
 - Cross-filesystem I/O (`/mnt/c/...`) is slow. Keep dev work on the Linux side: `~/projects/`, not `/mnt/c/Users/.../projects/`.
 
+When a tool says "install on Linux" or has a WSL note, always install and run it from the WSL terminal — not PowerShell or CMD. The WSL binary won't exist on the Windows side.
+
 Mental model:
 
 ```
