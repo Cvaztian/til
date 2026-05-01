@@ -22,6 +22,9 @@ Current: `linux/`, `go/`, `tools/`, `wsl/`
 
 Future (create as needed): `git/`, `docker/`, `networking/`, `devops/`, `security/`, `databases/`, `testing/`, `python/`, `c/`, `typescript/`
 
+## about.md files
+Each category may have an `about.md` — a permanent technology reference covering: what kind of tool/language it is, origins, who uses it and for what, current context, pros/cons, and recommendations. This is not a TIL entry and is not listed in the index table. It is linked from the category README.
+
 ## Adding a new entry
 1. Create the `.md` file in the appropriate category directory using `_templates/entry.md`
 2. Update that category's `README.md`

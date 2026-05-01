@@ -2,7 +2,7 @@
 
 Short notes on tools, languages, and engineering tricks I pick up along the way.
 
-**6 entries** across **4 categories**
+**8 entries** across **4 categories**
 
 ---
 
@@ -15,10 +15,12 @@ Short notes on tools, languages, and engineering tricks I pick up along the way.
 | [Installing Software Like a Power User](linux/installing-software-like-a-power-user.md) | `apt`, `package-manager`, `install`, `snap`, `brew` |
 | [.bashrc and source](linux/bashrc-and-source.md) | `shell`, `config`, `environment`, `bashrc` |
 
-### Go (1 entry)
+### Go (3 entries)
 | Entry | Tags |
 |-------|------|
 | [Go Installation Notes](go/installing-go.md) | `go`, `install`, `tarball`, `path` |
+| [Error Handling](go/error-handling.md) | `go`, `errors`, `idioms`, `fundamentals` |
+| [Modules and Packages](go/modules-and-packages.md) | `go`, `modules`, `packages`, `dependency-management`, `fundamentals` |
 
 ### Tools (1 entry)
 | Entry | Tags |
