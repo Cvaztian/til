@@ -1,4 +1,4 @@
-# Installing Claude Code on Linux / WSL
+# Claude Code Installation Notes
 > **Tags:** `claude-code`, `install`, `curl`, `path`
 > **Date:** 2026-04-30
 > **Related:** [how-linux-finds-commands](../linux/how-linux-finds-commands.md), [bashrc-and-source](../linux/bashrc-and-source.md), [wsl-vs-windows-filesystems](../wsl/wsl-vs-windows-filesystems.md)

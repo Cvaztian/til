@@ -2,4 +2,4 @@
 
 Notes on specific tool installation and usage.
 
-- [Installing Claude Code](claude-code-install.md) — native installer, PATH setup, WSL notes
+- [Claude Code Installation Notes](claude-code-install.md) — curl flags, PATH setup, WSL notes

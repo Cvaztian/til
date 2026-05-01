@@ -1,4 +1,4 @@
-# Installing Go on Linux (the right way)
+# Go Installation Notes
 > **Tags:** `go`, `install`, `tarball`, `path`
 > **Date:** 2026-04-30
 > **Related:** [how-linux-finds-commands](../linux/how-linux-finds-commands.md), [installing-software-like-a-power-user](../linux/installing-software-like-a-power-user.md)
