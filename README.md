@@ -2,7 +2,7 @@
 
 Short notes on tools, languages, and engineering tricks I pick up along the way.
 
-**8 entries** across **4 categories**
+**8 entries** across **5 categories**
 
 ---
 
@@ -26,6 +26,9 @@ Short notes on tools, languages, and engineering tricks I pick up along the way.
 | Entry | Tags |
 |-------|------|
 | [Claude Code Installation Notes](tools/claude-code-install.md) | `claude-code`, `install`, `curl`, `path` |
+
+### C (0 entries)
+_No entries yet — see [about.md](c/about.md) for the language overview._
 
 ### WSL (1 entry)
 | Entry | Tags |
