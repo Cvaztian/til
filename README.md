@@ -27,8 +27,15 @@ Short notes on tools, languages, and engineering tricks I pick up along the way.
 |-------|------|
 | [Claude Code Installation Notes](tools/claude-code-install.md) | `claude-code`, `install`, `curl`, `path` |
 
-### C (0 entries)
-_No entries yet — see [about.md](c/about.md) for the language overview._
+### C (4 study files)
+_Study files, not TIL entries — see [c/README.md](c/README.md) for the full index._
+
+| File | Topics |
+|------|--------|
+| [1_fundamentals.c](c/1_fundamentals.c) | Variables, loops, functions, arrays, strings, structs |
+| [2_pointers_and_memory.c](c/2_pointers_and_memory.c) | Pointers, pointer arithmetic, stack vs heap, dynamic memory, UB |
+| [3_language_features/](c/3_language_features/) | Bitwise ops, `const`, `volatile`, enums, function pointers, header/source separation |
+| [4_code_quality.c](c/4_code_quality.c) | Defensive programming, input validation, error handling, logging, assertions |
 
 ### WSL (1 entry)
 | Entry | Tags |
