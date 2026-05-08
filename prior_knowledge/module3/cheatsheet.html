@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cheat Sheet — Módulo 3: Sistemas Digitales Avanzados</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #1c2333;
+    --border: #30363d;
+    --text: #c9d1d9;
+    --text-dim: #8b949e;
+    --text-bright: #e6edf3;
+    --accent-teal: #39d98a;
+    --accent-blue: #58a6ff;
+    --accent-purple: #bc8cff;
+    --accent-amber: #e3b341;
+    --accent-coral: #f97583;
+    --accent-cyan: #56d4dd;
+    --tag-interview: #f0883e;
+    --tag-core: #58a6ff;
+    --tag-trap: #f97583;
+    --tag-avionics: #bc8cff;
+    --tag-firmware: #39d98a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 32px 0 24px;
+    border-bottom: 2px solid var(--accent-teal);
+    margin-bottom: 32px;
+  }
+  .header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-bright);
+    letter-spacing: -0.5px;
+  }
+  .header .sub {
+    color: var(--accent-teal);
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 6px;
+  }
+
+  /* Tags */
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .tag-interview { background: var(--tag-interview); color: #000; }
+  .tag-core { background: var(--tag-core); color: #000; }
+  .tag-trap { background: var(--tag-trap); color: #000; }
+  .tag-avionics { background: var(--tag-avionics); color: #000; }
+  .tag-firmware { background: var(--tag-firmware); color: #000; }
+
+  /* Sections */
+  .section {
+    margin-bottom: 28px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--bg2);
+  }
+  .section-header {
+    padding: 14px 20px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-bright);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-header .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: #000;
+  }
+  .sh-uart .num { background: var(--accent-teal); }
+  .sh-spi .num { background: var(--accent-blue); }
+  .sh-i2c .num { background: var(--accent-purple); }
+  .sh-can .num { background: var(--accent-coral); }
+  .sh-gpio .num { background: var(--accent-amber); }
+  .sh-int .num { background: var(--accent-coral); }
+  .sh-timer .num { background: var(--accent-cyan); }
+  .sh-dma .num { background: var(--accent-blue); }
+  .sh-fpga .num { background: var(--accent-purple); }
+  .sh-timing .num { background: var(--accent-amber); }
+  .sh-debug .num { background: var(--accent-teal); }
+
+  .sh-uart { border-left: 4px solid var(--accent-teal); }
+  .sh-spi { border-left: 4px solid var(--accent-blue); }
+  .sh-i2c { border-left: 4px solid var(--accent-purple); }
+  .sh-can { border-left: 4px solid var(--accent-coral); }
+  .sh-gpio { border-left: 4px solid var(--accent-amber); }
+  .sh-int { border-left: 4px solid var(--accent-coral); }
+  .sh-timer { border-left: 4px solid var(--accent-cyan); }
+  .sh-dma { border-left: 4px solid var(--accent-blue); }
+  .sh-fpga { border-left: 4px solid var(--accent-purple); }
+  .sh-timing { border-left: 4px solid var(--accent-amber); }
+  .sh-debug { border-left: 4px solid var(--accent-teal); }
+
+  .section-body { padding: 4px 20px 18px; }
+
+  /* Items */
+  .item {
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(48,54,61,0.5);
+    font-size: 13.5px;
+  }
+  .item:last-child { border-bottom: none; }
+  .item .key {
+    font-weight: 600;
+    color: var(--text-bright);
+  }
+  .formula {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--bg3);
+    color: var(--accent-cyan);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12.5px;
+  }
+  .val {
+    color: var(--accent-amber);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+  }
+
+  /* Warning / tip boxes */
+  .warn {
+    background: rgba(249,117,131,0.1);
+    border-left: 3px solid var(--accent-coral);
+    padding: 8px 14px;
+    margin: 8px 0;
+    border-radius: 0 6px 6px 0;
+    font-size: 13px;
+  }
+  .tip {
+    background: rgba(57,217,138,0.1);
+    border-left: 3px solid var(--accent-teal);
+    padding: 8px 14px;
+    margin: 8px 0;
+    border-radius: 0 6px 6px 0;
+    font-size: 13px;
+  }
+
+  /* Comparison table */
+  .cmp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin: 10px 0;
+    font-family: 'IBM Plex Sans', sans-serif;
+  }
+  .cmp-table th {
+    background: var(--bg3);
+    color: var(--text-bright);
+    padding: 8px 6px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid var(--border);
+    font-size: 11.5px;
+  }
+  .cmp-table td {
+    padding: 6px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .cmp-table tr:hover td { background: rgba(88,166,255,0.05); }
+  .cmp-table .hl { color: var(--accent-teal); font-weight: 600; }
+
+  /* Glossary */
+  .glossary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 4px 20px;
+    font-size: 12.5px;
+  }
+  .glossary-grid .ge {
+    display: flex;
+    gap: 6px;
+    padding: 3px 0;
+    border-bottom: 1px solid rgba(48,54,61,0.3);
+  }
+  .glossary-grid .ge .ga {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent-blue);
+    font-weight: 500;
+    min-width: 70px;
+    font-size: 11.5px;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 16px 0;
+    justify-content: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Módulo 3 — Sistemas Digitales Avanzados</h1>
+  <div class="sub">Cheat Sheet · Embedded Software Engineer · Aeronautical SW / Joby Aviation</div>
+</div>
+
+<div class="legend">
+  <span class="tag tag-interview">Entrevista</span>
+  <span class="tag tag-core">Core</span>
+  <span class="tag tag-trap">Trampa</span>
+  <span class="tag tag-avionics">Aviónica</span>
+  <span class="tag tag-firmware">Firmware</span>
+</div>
+
+<!-- ===================== UART ===================== -->
+<div class="section sh-uart">
+  <div class="section-header"><span class="num">3.1a</span> UART <span class="tag tag-core">Core</span></div>
+  <div class="section-body">
+    <div class="item"><span class="key">Tipo:</span> Asíncrono, 2 cables (TX/RX cruzados), punto a punto, full-duplex</div>
+    <div class="item"><span class="key">Frame 8N1:</span> <span class="formula">Start(1) + Data(8) + Stop(1) = 10 bits</span> → eficiencia 80%</div>
+    <div class="item"><span class="key">Baud rates clave:</span> <span class="val">9600</span> (GPS) · <span class="val">115200</span> (debug) — tolerancia ±3-5%</div>
+    <div class="item"><span class="key">Throughput 115200 baud:</span> <span class="formula">115200 / 10 = 11520 B/s ≈ 11.25 KB/s</span></div>
+    <div class="item"><span class="key">Capas:</span> UART = protocolo · TTL = niveles eléctricos · RS-232 = capa física invertida · RS-485 = diferencial</div>
+    <div class="warn">⚠️ TX→RX cruzado. TX con TX = error #1. Baud rate diferente = basura.</div>
+  </div>
+</div>
+
+<!-- ===================== SPI ===================== -->
+<div class="section sh-spi">
+  <div class="section-header"><span class="num">3.1b</span> SPI <span class="tag tag-interview">Entrevista</span><span class="tag tag-core">Core</span></div>
+  <div class="section-body">
+    <div class="item"><span class="key">Tipo:</span> Síncrono (SCLK), 3+N cables, full-duplex, 1 master / N slaves</div>
+    <div class="item"><span class="key">Líneas:</span> SCLK · MOSI (COPI) · MISO (CIPO) · CS̄ por slave (activo LOW)</div>
+    <div class="item"><span class="key">Mecanismo:</span> Shift register circular — 8 pulsos SCLK intercambian 1 byte entre master y slave</div>
+    <div class="item"><span class="key">Siempre full-duplex:</span> Enviar = recibir. Solo leer → enviar dummy. Solo escribir → ignorar recibido.</div>
+    <div class="item"><span class="key">Velocidad:</span> Hasta <span class="val">~50+ MHz</span> — el bus más rápido de los 4</div>
+    <div class="item"><span class="key">Modos (CPOL/CPHA):</span></div>
+
+    <table class="cmp-table">
+      <tr><th>Modo</th><th>CPOL</th><th>CPHA</th><th>Idle</th><th>Muestreo</th><th>Uso</th></tr>
+      <tr><td class="hl">0</td><td>0</td><td>0</td><td>LOW</td><td>Rising</td><td><strong>Más común</strong></td></tr>
+      <tr><td>1</td><td>0</td><td>1</td><td>LOW</td><td>Falling</td><td>Algunos ADCs</td></tr>
+      <tr><td>2</td><td>1</td><td>0</td><td>HIGH</td><td>Falling</td><td>Raro</td></tr>
+      <tr><td>3</td><td>1</td><td>1</td><td>HIGH</td><td>Rising</td><td>SD cards</td></tr>
+    </table>
+
+    <div class="item"><span class="key">Sin:</span> dirección, ACK, estándar formal, multi-master</div>
+    <div class="item"><span class="key">Uso:</span> Flash SPI, ADCs rápidos, IMUs, displays</div>
+    <div class="tip">💡 Si un dispositivo no funciona: verificar modo SPI en datasheet del slave.</div>
+  </div>
+</div>
+
+<!-- ===================== I2C ===================== -->
+<div class="section sh-i2c">
+  <div class="section-header"><span class="num">3.1c</span> I2C <span class="tag tag-interview">Entrevista</span><span class="tag tag-core">Core</span></div>
+  <div class="section-body">
+    <div class="item"><span class="key">Tipo:</span> Síncrono (SCL), 2 cables (SCL+SDA), half-duplex, open-drain + pull-up</div>
+    <div class="item"><span class="key">Pull-ups:</span> <span class="val">4.7 kΩ</span> típico a 3.3V. Fast mode → 2.2 kΩ o 1 kΩ.</div>
+    <div class="item"><span class="key">Topología:</span> Multi-master, multi-slave. Hasta <span class="val">127</span> dispositivos (7-bit address).</div>
+    <div class="item"><span class="key">Wired-AND:</span> Cualquier LOW gana → arbitraje natural + clock stretching.</div>
+    <div class="item"><span class="key">Protocolo:</span> <span class="formula">START → Addr(7)+R/W̄(1) → ACK → Data → ACK → STOP</span></div>
+    <div class="item"><span class="key">Lectura:</span> 2 fases — write (dir registro) + <strong>repeated start</strong> + read (dato)</div>
+    <div class="item"><span class="key">Velocidades:</span> <span class="val">100 kHz</span> (standard) · <span class="val">400 kHz</span> (fast, más usado) · 1 MHz (Fm+) · 3.4 MHz (Hs)</div>
+    <div class="item"><span class="key">Colisión de address:</span> Pines A0/A1/A2 o I2C multiplexer (TCA9548A)</div>
+    <div class="item"><span class="key">Uso:</span> Sensores lentos, EEPROM, RTC, PMICs, IO expanders</div>
+    <div class="warn">⚠️ START/STOP se definen por SDA cambiando mientras SCL está HIGH. Datos solo cambian con SCL LOW.</div>
+  </div>
+</div>
+
+<!-- ===================== CAN ===================== -->
+<div class="section sh-can">
+  <div class="section-header"><span class="num">3.1d</span> CAN Bus ⭐ <span class="tag tag-interview">Entrevista</span><span class="tag tag-avionics">Aviónica</span><span class="tag tag-core">Core</span></div>
+  <div class="section-body">
+    <div class="item"><span class="key">Tipo:</span> Asíncrono, 2 cables diferenciales (CAN_H/CAN_L), multi-master (peers), half-duplex</div>
+    <div class="item"><span class="key">Terminación:</span> <span class="val">120Ω</span> en cada extremo del bus</div>
+    <div class="item"><span class="key">Dominante (0):</span> V_diff ≈ 2V (CAN_H=3.5V, CAN_L=1.5V) — transceiver separa líneas</div>
+    <div class="item"><span class="key">Recesivo (1):</span> V_diff ≈ 0V (ambas ≈ 2.5V) — estado default</div>
+    <div class="item"><span class="key">Regla clave:</span> <strong>Dominante SIEMPRE gana</strong> → base del arbitraje</div>
+    <div class="item"><span class="key">Arbitraje:</span> ID menor = mayor prioridad. Nodos comparan bit a bit; quien envía 1 pero lee 0 se retira. <strong>Sin colisión ni pérdida.</strong></div>
+    <div class="item"><span class="key">Frame:</span> <span class="formula">SOF + ID(11b) + RTR + IDE + DLC(4b) + Data(0-8B) + CRC(15b) + ACK + EOF</span></div>
+    <div class="item"><span class="key">CAN FD:</span> Hasta <span class="val">64 bytes</span> payload, <span class="val">8 Mbps</span> en datos (arbitraje sigue a 1 Mbps)</div>
+    <div class="item"><span class="key">5 mecanismos de error:</span> Bit monitoring · Bit stuffing · CRC · ACK · Frame check</div>
+    <div class="item"><span class="key">Error confinement:</span> Error Active (0-127) → Error Passive (128-255) → <strong>Bus Off</strong> (&gt;255) — auto-aislamiento</div>
+    <div class="item"><span class="key">Velocidades:</span> <span class="val">1 Mbps</span>/40m · 500kbps/100m · 125kbps/500m · 50kbps/1000m</div>
+    <div class="item"><span class="key">Aviación:</span> ARINC 825 (CAN) · ARINC 429 (legacy, unidireccional) · AFDX (Ethernet)</div>
+    <div class="tip">💡 En entrevista: "¿protocolo de comunicación en aviones?" → ARINC 825 (CAN-based, moderno).</div>
+    <div class="warn">⚠️ IDs bajos = alta prioridad. Mensajes safety-critical siempre con IDs bajos.</div>
+  </div>
+</div>
+
+<!-- ===================== PROTOCOL COMPARISON ===================== -->
+<div class="section" style="border-left: 4px solid var(--accent-cyan);">
+  <div class="section-header" style="color: var(--accent-cyan);">📊 Tabla Comparativa de Protocolos <span class="tag tag-interview">Entrevista</span></div>
+  <div class="section-body">
+    <table class="cmp-table">
+      <tr><th></th><th>UART</th><th>SPI</th><th>I2C</th><th>CAN</th></tr>
+      <tr><td><strong>Cables</strong></td><td>2</td><td>3+N</td><td>2</td><td>2</td></tr>
+      <tr><td><strong>Clock</strong></td><td>Async</td><td>Sync</td><td>Sync</td><td>Async</td></tr>
+      <tr><td><strong>Duplex</strong></td><td>Full</td><td>Full</td><td>Half</td><td>Half</td></tr>
+      <tr><td><strong>Topología</strong></td><td>P2P</td><td>1M-NS</td><td>MM-MS</td><td>MM peers</td></tr>
+      <tr><td><strong>Velocidad</strong></td><td>~115 kbps</td><td class="hl">~50+ MHz</td><td>100-400 kHz</td><td>1/8 Mbps</td></tr>
+      <tr><td><strong>Señal</strong></td><td>SE</td><td>SE</td><td>OD+PU</td><td class="hl">Diferencial</td></tr>
+      <tr><td><strong>ACK</strong></td><td>No</td><td>No</td><td>Sí/byte</td><td>Sí/frame</td></tr>
+      <tr><td><strong>Distancia</strong></td><td>~15m</td><td>~1m</td><td>~1m</td><td class="hl">1000m</td></tr>
+      <tr><td><strong>Dispositivos</strong></td><td>2</td><td>por CS̄</td><td>127</td><td>~110</td></tr>
+    </table>
+    <div class="tip">💡 <strong>Elegir protocolo:</strong> Debug simple → UART · Alta velocidad en PCB → SPI · Muchos dispositivos, pocos pines → I2C · Ambiente ruidoso, safety-critical → CAN</div>
+  </div>
+</div>
+
+<!-- ===================== GPIO ===================== -->
+<div class="section sh-gpio">
+  <div class="section-header"><span class="num">3.2a</span> GPIO <span class="tag tag-firmware">Firmware</span><span class="tag tag-core">Core</span></div>
+  <div class="section-body">
+    <div class="item"><span class="key">Registros clave:</span> MODER (modo) · OTYPER (PP/OD) · OSPEEDR · PUPDR · IDR (input) · ODR (output) · <strong>BSRR</strong> (atómico)</div>
+    <div class="item"><span class="key">MODER:</span> <span class="formula">00</span>=Input · <span class="formula">01</span>=Output · <span class="formula">10</span>=AF · <span class="formula">11</span>=Analog — 2 bits por pin</div>
+    <div class="item"><span class="key">BSRR:</span> Bits [15:0] = SET, bits [31:16] = RESET. <strong>Atómico</strong> — sin read-modify-write.</div>
+    <div class="item"><span class="key">Alternate Function:</span> AF0-AF15 en GPIOx_AFR[0/1]. Definidas en datasheet por pin.</div>
+    <div class="warn">⚠️ <strong>Error #1:</strong> Olvidar habilitar clock RCC antes de configurar GPIO. Sin clock → registros leen 0.</div>
+  </div>
+</div>
+
+<!-- ===================== INTERRUPCIONES ===================== -->
+<div class="section sh-int">
+  <div class="section-header"><span class="num">3.2b</span> Interrupciones / NVIC <span class="tag tag-interview">Entrevista</span><span class="tag tag-core">Core</span></div>
+  <div class="section-body">
+    <div class="item"><span class="key">NVIC:</span> Nested Vectored Interrupt Controller. Número menor = mayor prioridad.</div>
+    <div class="item"><span class="key">Flujo:</span> <span class="formula">IRQ → HW push (R0-R3,R12,LR,PC,xPSR) → Vector table → ISR → HW pop → Resume</span></div>
+    <div class="item"><span class="key">Latencia:</span> <span class="val">12 ciclos</span> (Cortex-M4). Push/pop automático en hardware.</div>
+    <div class="item"><span class="key">Tail-chaining:</span> ISR pendiente → salta directo sin pop+push — solo <span class="val">6 ciclos</span>.</div>
+    <div class="item"><span class="key">Late arrival:</span> IRQ mayor prioridad durante push → cambia vector en vuelo.</div>
+
+    <div class="warn">⚠️ <strong>Reglas ISR (pregunta de entrevista):</strong><br>
+      1. Corta — setear flag, procesar en main/RTOS<br>
+      2. Sin delays, bloqueantes, printf, malloc<br>
+      3. Siempre limpiar pending flag<br>
+      4. Variables compartidas → <span class="formula">volatile</span><br>
+      5. Secciones críticas → atómico o deshabilitar IRQs brevemente
+    </div>
+  </div>
+</div>
+
+<!-- ===================== TIMERS / PWM ===================== -->
+<div class="section sh-timer">
+  <div class="section-header"><span class="num">3.2c</span> Timers y PWM <span class="tag tag-interview">Entrevista</span><span class="tag tag-firmware">Firmware</span></div>
+  <div class="section-body">
+    <div class="item"><span class="key">Parámetros:</span> PSC (prescaler) · ARR (auto-reload) · CNT (counter) · CCR (compare, para PWM)</div>
+    <div class="item"><span class="key">Frecuencia overflow:</span> <span class="formula">f = f_clk / ((PSC+1) × (ARR+1))</span></div>
+    <div class="item"><span class="key">PWM duty:</span> <span class="formula">Duty = CCR / (ARR+1) × 100%</span> — CNT &lt; CCR → HIGH, CNT ≥ CCR → LOW</div>
+    <div class="item"><span class="key">Ejemplo 500ms (84MHz):</span> PSC=<span class="val">8399</span> → 10kHz · ARR=<span class="val">4999</span> → T=0.5s</div>
+    <div class="item"><span class="key">Ejemplo 1µs resolución:</span> PSC=<span class="val">83</span> → 1MHz · 1 tick = 1µs</div>
+    <div class="item"><span class="key">Ejemplo servo 50Hz:</span> PSC=83, ARR=<span class="val">19999</span> → 50Hz · CCR=<span class="val">1500</span> → 1.5ms (centro)</div>
+    <div class="warn">⚠️ <strong>Trampa APB:</strong> Si prescaler APB &gt; 1, clock del timer se multiplica ×2.</div>
+  </div>
+</div>
+
+<!-- ===================== DMA ===================== -->
+<div class="section sh-dma">
+  <div class="section-header"><span class="num">3.2d</span> DMA <span class="tag tag-core">Core</span><span class="tag tag-firmware">Firmware</span></div>
+  <div class="section-body">
+    <div class="item"><span class="key">Qué es:</span> Transferencia HW sin CPU: periférico ↔ memoria o memoria ↔ memoria.</div>
+    <div class="item"><span class="key">Modos:</span> <strong>Normal</strong> (para al terminar) · <strong>Circular</strong> (loop continuo — ADC, audio)</div>
+    <div class="item"><span class="key">Double buffering:</span> DMA llena A mientras CPU procesa B. Cero muestras perdidas.</div>
+    <div class="item"><span class="key">Bus stalling:</span> DMA y CPU comparten bus AHB — DMA constante puede ralentizar CPU.</div>
+    <div class="tip">💡 <strong>Cuándo usar:</strong> Polling (raro/simple) · Interrupciones (frecuente, poco dato) · DMA (masivo, CPU libre)</div>
+  </div>
+</div>
+
+<!-- ===================== FPGA ===================== -->
+<div class="section sh-fpga">
+  <div class="section-header"><span class="num">3.3</span> FPGA vs ASIC vs MCU <span class="tag tag-interview">Entrevista</span></div>
+  <div class="section-body">
+    <table class="cmp-table">
+      <tr><th></th><th>MCU</th><th>FPGA</th><th>ASIC</th></tr>
+      <tr><td><strong>Ejecución</strong></td><td>Secuencial</td><td class="hl">Paralelo</td><td class="hl">Paralelo fijo</td></tr>
+      <tr><td><strong>Flexible</strong></td><td class="hl">Software</td><td>HDL reprogram.</td><td>No</td></tr>
+      <tr><td><strong>Desarrollo</strong></td><td class="hl">Rápido (C)</td><td>Lento (VHDL)</td><td>Muy lento</td></tr>
+      <tr><td><strong>NRE</strong></td><td>~$0</td><td>$0</td><td>$1M+</td></tr>
+      <tr><td><strong>Costo unit.</strong></td><td>$1-20</td><td>$10-10K</td><td class="hl">$0.10 vol.</td></tr>
+      <tr><td><strong>Eficiencia</strong></td><td>Baja</td><td>Alta</td><td class="hl">Máxima</td></tr>
+    </table>
+    <div class="item"><span class="key">FPGA internals:</span> LUT (tabla verdad en SRAM) · CLB · Routing (~80% área) · Block RAM · DSP slices</div>
+    <div class="item"><span class="key">FPGAs en aviónica:</span> Paralelismo · Latencia determinista · TMR (triple redundancy) · DO-254</div>
+    <div class="tip">💡 DO-178C = software · DO-254 = hardware programable. Combo típico: MCU + FPGA.</div>
+  </div>
+</div>
+
+<!-- ===================== TIMING ===================== -->
+<div class="section sh-timing">
+  <div class="section-header"><span class="num">3.4</span> Timing y Sincronización <span class="tag tag-core">Core</span><span class="tag tag-firmware">Firmware</span></div>
+  <div class="section-body">
+    <div class="item"><span class="key">Clock sources:</span> HSE (cristal, preciso) · HSI (RC, rápido) · LSE (<span class="val">32768 Hz = 2¹⁵</span> → RTC) · LSI (watchdog)</div>
+    <div class="item"><span class="key">PLL:</span> <span class="formula">f_out = (HSE / M) × N / P</span> — esperar PLL_RDY antes de usar</div>
+    <div class="item"><span class="key">Ejemplo STM32F4:</span> <span class="formula">8MHz / 8 × 336 / 2 = 168 MHz SYSCLK</span></div>
+    <div class="item"><span class="key">Bus tree:</span> SYSCLK → AHB (/1) → APB2 (/2, rápido) / APB1 (/4, lento)</div>
+    <div class="item"><span class="key">Jitter:</span> Variación de flancos. Afecta ENOB del ADC y timing serial.</div>
+    <div class="item"><span class="key">CDC multi-bit:</span> Gray code (contadores) · Handshake · Async FIFO</div>
+    <div class="warn">⚠️ En aviónica, TODO CDC debe ser documentado y verificado. CDC no sincronizado = bug latente.</div>
+  </div>
+</div>
+
+<!-- ===================== DEBUG ===================== -->
+<div class="section sh-debug">
+  <div class="section-header"><span class="num">3.5</span> JTAG / SWD / Debug <span class="tag tag-core">Core</span></div>
+  <div class="section-body">
+    <div class="item"><span class="key">JTAG:</span> 4 cables (TCK, TMS, TDI, TDO). Daisy-chain. Boundary scan + debug + programming.</div>
+    <div class="item"><span class="key">SWD:</span> 2 cables (SWDIO, SWCLK). Solo ARM. Debug equivalente, sin boundary scan.</div>
+    <div class="item"><span class="key">Capacidades:</span> Breakpoints (HW 4-8 / SW ∞) · Watchpoints · Single-step · Memory R/W · ITM trace</div>
+    <div class="item"><span class="key">BIST:</span> Auto-test HW al encender. Firmware invoca y maneja resultados (pass/fail).</div>
+    <div class="tip">💡 SWD para debug diario de Cortex-M (menos pines). JTAG para PCBs con múltiples chips o FPGAs.</div>
+  </div>
+</div>
+
+<!-- ===================== GLOSSARY ===================== -->
+<div class="section" style="border-left: 4px solid var(--text-dim);">
+  <div class="section-header">📖 Glosario Rápido</div>
+  <div class="section-body">
+    <div class="glossary-grid">
+      <div class="ge"><span class="ga">UART</span><span>Universal Async Receiver/Transmitter</span></div>
+      <div class="ge"><span class="ga">SPI</span><span>Serial Peripheral Interface</span></div>
+      <div class="ge"><span class="ga">I2C</span><span>Inter-Integrated Circuit</span></div>
+      <div class="ge"><span class="ga">CAN</span><span>Controller Area Network</span></div>
+      <div class="ge"><span class="ga">MOSI</span><span>Master Out Slave In (= COPI)</span></div>
+      <div class="ge"><span class="ga">MISO</span><span>Master In Slave Out (= CIPO)</span></div>
+      <div class="ge"><span class="ga">CS̄</span><span>Chip Select (activo LOW)</span></div>
+      <div class="ge"><span class="ga">SCL/SDA</span><span>Serial Clock / Data (I2C)</span></div>
+      <div class="ge"><span class="ga">CPOL</span><span>Clock Polarity (SPI)</span></div>
+      <div class="ge"><span class="ga">CPHA</span><span>Clock Phase (SPI)</span></div>
+      <div class="ge"><span class="ga">GPIO</span><span>General Purpose Input/Output</span></div>
+      <div class="ge"><span class="ga">BSRR</span><span>Bit Set/Reset Register (atómico)</span></div>
+      <div class="ge"><span class="ga">RCC</span><span>Reset and Clock Control</span></div>
+      <div class="ge"><span class="ga">NVIC</span><span>Nested Vectored Interrupt Ctrl</span></div>
+      <div class="ge"><span class="ga">ISR</span><span>Interrupt Service Routine</span></div>
+      <div class="ge"><span class="ga">PSC</span><span>Prescaler (timer)</span></div>
+      <div class="ge"><span class="ga">ARR</span><span>Auto-Reload Register (timer)</span></div>
+      <div class="ge"><span class="ga">CCR</span><span>Capture/Compare Register (PWM)</span></div>
+      <div class="ge"><span class="ga">DMA</span><span>Direct Memory Access</span></div>
+      <div class="ge"><span class="ga">FPGA</span><span>Field-Programmable Gate Array</span></div>
+      <div class="ge"><span class="ga">ASIC</span><span>Application-Specific IC</span></div>
+      <div class="ge"><span class="ga">LUT</span><span>Look-Up Table (FPGA)</span></div>
+      <div class="ge"><span class="ga">CLB</span><span>Configurable Logic Block</span></div>
+      <div class="ge"><span class="ga">TMR</span><span>Triple Modular Redundancy</span></div>
+      <div class="ge"><span class="ga">NRE</span><span>Non-Recurring Engineering cost</span></div>
+      <div class="ge"><span class="ga">HSE/HSI</span><span>High-Speed External/Internal clk</span></div>
+      <div class="ge"><span class="ga">PLL</span><span>Phase-Locked Loop</span></div>
+      <div class="ge"><span class="ga">AHB/APB</span><span>Advanced High-perf / Peripheral Bus</span></div>
+      <div class="ge"><span class="ga">CDC</span><span>Clock Domain Crossing</span></div>
+      <div class="ge"><span class="ga">JTAG</span><span>Joint Test Action Group (IEEE 1149.1)</span></div>
+      <div class="ge"><span class="ga">SWD</span><span>Serial Wire Debug (ARM)</span></div>
+      <div class="ge"><span class="ga">ITM</span><span>Instrumentation Trace Macrocell</span></div>
+      <div class="ge"><span class="ga">BIST</span><span>Built-In Self-Test</span></div>
+      <div class="ge"><span class="ga">ARINC 825</span><span>CAN bus estándar para aviación</span></div>
+      <div class="ge"><span class="ga">DO-254</span><span>Certificación HW programable</span></div>
+      <div class="ge"><span class="ga">WCET</span><span>Worst-Case Execution Time</span></div>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center; padding: 20px 0; color: var(--text-dim); font-size: 12px;">
+  Módulo 3 · Sistemas Digitales Avanzados · Aeronautical SW / Joby · Mayo 2026
+</div>
+
+</body>
+</html>

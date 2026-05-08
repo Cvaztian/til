@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa de Preparación — Aeronautical SW Interview</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117; --bg2: #161b22; --bg3: #1c2333; --border: #30363d;
+    --text: #e6edf3; --text2: #b1bac4; --text3: #8b949e;
+    --red: #ff6b6b; --red-bg: rgba(255,107,107,0.08);
+    --orange: #ffa657; --orange-bg: rgba(255,166,87,0.08);
+    --yellow: #e3b341; --yellow-bg: rgba(227,179,65,0.08);
+    --green: #3fb950; --green-bg: rgba(63,185,80,0.08);
+    --blue: #58a6ff; --blue-bg: rgba(88,166,255,0.08);
+    --purple: #bc8cff; --purple-bg: rgba(188,140,255,0.08);
+    --teal: #39d2c0; --teal-bg: rgba(57,210,192,0.08);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; line-height:1.5; padding:20px; max-width:1200px; margin:0 auto; }
+  code, .mono { font-family:'JetBrains Mono',monospace; }
+  .header { text-align:center; padding:30px 20px 20px; margin-bottom:24px; border-bottom:2px solid var(--blue); }
+  .header::before { content:'✈'; font-size:40px; display:block; margin-bottom:8px; }
+  .header h1 { font-size:26px; font-weight:700; letter-spacing:-0.5px; margin-bottom:6px; background:linear-gradient(135deg,var(--blue),var(--teal)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .header .sub { color:var(--text3); font-size:13px; }
+  .box { background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:20px; margin-bottom:20px; }
+  .box h2 { font-size:16px; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+  .exam-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:10px; }
+  .exam-section { background:var(--bg3); border-radius:8px; padding:14px; border-left:3px solid var(--blue); }
+  .exam-section.s-reason { border-left-color:var(--purple); }
+  .exam-section.s-tech { border-left-color:var(--red); }
+  .exam-section.s-write { border-left-color:var(--green); }
+  .exam-section.s-speak { border-left-color:var(--teal); }
+  .exam-section h3 { font-size:14px; font-weight:600; margin-bottom:4px; }
+  .exam-section .time { font-size:12px; color:var(--text3); font-family:'JetBrains Mono',monospace; margin-bottom:6px; }
+  .exam-section ul { list-style:none; font-size:12.5px; color:var(--text2); }
+  .exam-section ul li::before { content:'→ '; color:var(--text3); }
+  .timeline { display:flex; flex-wrap:wrap; gap:0; align-items:center; justify-content:center; }
+  .step { background:var(--bg3); border-radius:8px; padding:10px 14px; font-size:12px; text-align:center; min-width:110px; border:1px solid var(--border); }
+  .step .num { display:block; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--text3); margin-bottom:2px; }
+  .step-arrow { color:var(--text3); font-size:18px; padding:0 4px; }
+  .job-match { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+  .jm-item { background:var(--bg3); border-radius:8px; padding:10px 12px; font-size:12px; border-left:3px solid var(--green); }
+  .jm-item .jm-resp { color:var(--text2); font-size:11.5px; margin-bottom:4px; font-style:italic; }
+  .jm-item .jm-prep { color:var(--text); font-size:12px; }
+  .jm-item .jm-prep strong { color:var(--green); }
+  .section { background:var(--bg2); border:1px solid var(--border); border-radius:10px; margin-bottom:16px; overflow:hidden; }
+  .section-head { padding:14px 18px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; user-select:none; transition:background 0.15s; }
+  .section-head:hover { background:var(--bg3); }
+  .section-head h2 { font-size:15px; font-weight:600; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .section-head .arrow { transition:transform 0.2s; color:var(--text3); font-size:14px; }
+  .section.open .section-head .arrow { transform:rotate(90deg); }
+  .section-body { display:none; padding:0 18px 18px; }
+  .section.open .section-body { display:block; }
+  .tag { font-size:10px; font-weight:600; padding:2px 8px; border-radius:10px; text-transform:uppercase; letter-spacing:0.5px; font-family:'JetBrains Mono',monospace; }
+  .tag-critical { background:var(--red-bg); color:var(--red); border:1px solid rgba(255,107,107,0.2); }
+  .tag-high { background:var(--orange-bg); color:var(--orange); border:1px solid rgba(255,166,87,0.2); }
+  .tag-medium { background:var(--yellow-bg); color:var(--yellow); border:1px solid rgba(227,179,65,0.2); }
+  .tag-english { background:var(--teal-bg); color:var(--teal); border:1px solid rgba(57,210,192,0.2); }
+  .tag-reasoning { background:var(--purple-bg); color:var(--purple); border:1px solid rgba(188,140,255,0.2); }
+  .tag-new { background:var(--blue-bg); color:var(--blue); border:1px solid rgba(88,166,255,0.2); }
+  .topic-grid { display:grid; grid-template-columns:1fr; gap:10px; margin-top:10px; }
+  .topic { background:var(--bg3); border-radius:8px; padding:12px 14px; border-left:3px solid var(--blue); font-size:13px; }
+  .topic h4 { font-size:13px; font-weight:600; margin-bottom:6px; }
+  .topic .items { color:var(--text2); font-size:12px; line-height:1.6; }
+  .topic .items strong { color:var(--text); font-weight:500; }
+  .topic .trap { margin-top:6px; padding:6px 8px; background:rgba(255,107,107,0.06); border-radius:6px; border:1px solid rgba(255,107,107,0.12); font-size:11.5px; color:var(--red); }
+  .topic .trap::before { content:'⚠ Trampa: '; font-weight:600; }
+  .topic.t-critical { border-left-color:var(--red); }
+  .topic.t-high { border-left-color:var(--orange); }
+  .topic.t-medium { border-left-color:var(--yellow); }
+  .check-group { margin-top:12px; }
+  .check-group h4 { font-size:12px; color:var(--text3); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+  .check-item { display:flex; align-items:flex-start; gap:8px; padding:6px 0; font-size:13px; color:var(--text2); border-bottom:1px solid rgba(48,54,61,0.3); }
+  .check-item:last-child { border-bottom:none; }
+  .check-item input[type="checkbox"] { margin-top:3px; accent-color:var(--green); cursor:pointer; flex-shrink:0; }
+  .check-item.checked { color:var(--text3); text-decoration:line-through; }
+  .code-block { background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:10px 12px; font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--text2); overflow-x:auto; margin:8px 0; white-space:pre; }
+  .warn-box { background:rgba(255,166,87,0.06); border:1px solid rgba(255,166,87,0.15); border-radius:8px; padding:12px 14px; margin:10px 0; font-size:12.5px; color:var(--orange); }
+  .tip-box { background:rgba(63,185,80,0.06); border:1px solid rgba(63,185,80,0.15); border-radius:8px; padding:12px 14px; margin:10px 0; font-size:12.5px; color:var(--green); }
+  .info-box { background:rgba(88,166,255,0.06); border:1px solid rgba(88,166,255,0.15); border-radius:8px; padding:12px 14px; margin:10px 0; font-size:12.5px; color:var(--blue); }
+  .footer { text-align:center; color:var(--text3); font-size:11px; padding:20px; margin-top:20px; border-top:1px solid var(--border); }
+  @media (max-width:600px) { body{padding:10px;} .exam-grid,.job-match{grid-template-columns:1fr;} .header h1{font-size:20px;} .timeline{flex-direction:column;} .step-arrow{transform:rotate(90deg);} }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Mapa de Preparacion Final — Aeronautical SW</h1>
+  <div class="sub">Embedded Software Engineer · Joby Aviation · eVTOL Avionics · US &amp; Dubai Launch</div>
+</div>
+
+<!-- JOB DESCRIPTION ANALYSIS -->
+<div class="box">
+  <h2 style="color:var(--blue)">&#127919; Analisis del Job Description → Que Preparar</h2>
+  <div class="info-box">
+    <strong>Insight clave:</strong> El puesto es ~50% desarrollo + ~50% verificacion/testing/documentacion. El JD menciona "test" 4 veces, "certification/compliance" 3 veces, y "documentation" 2 veces. No es solo escribir codigo — la mentalidad de calidad y TDD es central.
+  </div>
+  <div class="job-match">
+    <div class="jm-item">
+      <div class="jm-resp">"Develop embedded software for advanced avionics systems"</div>
+      <div class="jm-prep"><strong>→</strong> C/C++ embedded, ARM Cortex-M, memory-mapped I/O, volatile, bitwise</div>
+    </div>
+    <div class="jm-item">
+      <div class="jm-resp">"Following coding standards for aeronautical industry"</div>
+      <div class="jm-prep"><strong>→</strong> MISRA C, DO-178C compliance, no malloc, no recursion</div>
+    </div>
+    <div class="jm-item">
+      <div class="jm-resp">"Write software requirements according to industry standards"</div>
+      <div class="jm-prep"><strong>→</strong> DO-178C traceability, "shall" statements, verificable requirements</div>
+    </div>
+    <div class="jm-item">
+      <div class="jm-resp">"Test-Driven Development environment"</div>
+      <div class="jm-prep"><strong>→</strong> TDD cycle Red/Green/Refactor, Unity/CppUTest, mocking hardware</div>
+    </div>
+    <div class="jm-item">
+      <div class="jm-resp">"Develop test cases for SW and HW certification"</div>
+      <div class="jm-prep"><strong>→</strong> MC/DC coverage, boundary testing, equivalence partitioning</div>
+    </div>
+    <div class="jm-item">
+      <div class="jm-resp">"Review source code, requirements, tests and documentation"</div>
+      <div class="jm-prep"><strong>→</strong> Code review mindset, peer inspection, independence in verification</div>
+    </div>
+    <div class="jm-item">
+      <div class="jm-resp">"Strong knowledge of computer architectures, digital and analog circuits"</div>
+      <div class="jm-prep"><strong>→</strong> ARM pipeline, cache, SPI/I2C/CAN, ADC/DAC, transistores, logica</div>
+    </div>
+    <div class="jm-item">
+      <div class="jm-resp">"Experience with embedded and real-time operating systems (desired)"</div>
+      <div class="jm-prep"><strong>→</strong> FreeRTOS: tareas, scheduler, mutex, queues, priority inversion</div>
+    </div>
+  </div>
+</div>
+
+<!-- EXAM STRUCTURE -->
+<div class="box">
+  <h2 style="color:var(--orange)">&#128203; Estructura del Examen Online (segun resenas)</h2>
+  <div class="exam-grid">
+    <div class="exam-section s-reason">
+      <h3 style="color:var(--purple)">1. Reasoning</h3>
+      <div class="time">&#9201; ~26 min</div>
+      <ul>
+        <li>Patrones numericos y secuencias</li>
+        <li>Espejos / rotaciones de imagenes</li>
+        <li>Contar figuras geometricas</li>
+        <li>Logica matematica general</li>
+      </ul>
+    </div>
+    <div class="exam-section s-tech">
+      <h3 style="color:var(--red)">2. Technical</h3>
+      <div class="time">&#9201; ~60 min</div>
+      <ul>
+        <li>Ver codigo → predecir output</li>
+        <li>Tipos de datos primitivos vs compuestos</li>
+        <li>Preguntas de programacion/logica</li>
+        <li>Escribir codigo (resolver problema)</li>
+        <li>Electronica, software, logica</li>
+      </ul>
+    </div>
+    <div class="exam-section s-write">
+      <h3 style="color:var(--green)">3. English Writing</h3>
+      <div class="time">&#9201; ~10 min</div>
+      <ul>
+        <li>Escribir parrafo sobre situacion dada</li>
+        <li>Claridad, gramatica, vocabulario</li>
+      </ul>
+    </div>
+    <div class="exam-section s-speak">
+      <h3 style="color:var(--teal)">4. English Speaking</h3>
+      <div class="time">&#9201; ~5 min</div>
+      <ul>
+        <li>Hablar sobre tus habilidades</li>
+        <li>Camara + microfono activos</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- HIRING PROCESS -->
+<div class="box">
+  <h2 style="color:var(--teal)">&#128205; Proceso Completo (~3 semanas)</h2>
+  <div class="timeline">
+    <div class="step"><span class="num">1</span>Test online<br><span style="font-size:10px;color:var(--text3)">(link con camara)</span></div>
+    <span class="step-arrow">→</span>
+    <div class="step"><span class="num">2</span>English tests<br><span style="font-size:10px;color:var(--text3)">(online + call)</span></div>
+    <span class="step-arrow">→</span>
+    <div class="step"><span class="num">3</span>HR Interview<br><span style="font-size:10px;color:var(--text3)">(experiencia)</span></div>
+    <span class="step-arrow">→</span>
+    <div class="step"><span class="num">4</span>Engineering<br>Interview</div>
+    <span class="step-arrow">→</span>
+    <div class="step"><span class="num">5</span>Senior Mgr<br>Interview</div>
+    <span class="step-arrow">→</span>
+    <div class="step"><span class="num">6</span>Drug test +<br>3 Referencias</div>
+  </div>
+  <div class="tip-box" style="margin-top:14px">
+    <strong>Preguntas HR:</strong> "Tell me about previous experiences", "Which areas are you interested in?". <strong>Engineering:</strong> profundizar tecnico. <strong>Senior manager:</strong> fit cultural.
+  </div>
+</div>
+
+<!-- SECTION 1: CODE -->
+<div class="section open" id="sec-code">
+  <div class="section-head" onclick="toggle('sec-code')">
+    <h2><span style="color:var(--red)">&#9679;</span> Codigo C/C++ y Programacion <span class="tag tag-critical">CRITICA</span></h2>
+    <span class="arrow">&#9654;</span>
+  </div>
+  <div class="section-body">
+    <div class="warn-box"><strong>Segun resenas:</strong> Te dan codigo y debes predecir output. Tambien preguntas sobre tipos de datos y escribir codigo. JD pide 1-3 anos en C/C++ embedded.</div>
+    <div class="topic-grid">
+      <div class="topic t-critical">
+        <h4>&#128308; Predecir Output de Codigo C</h4>
+        <div class="items">
+          <strong>Trampas:</strong> precedencia de operadores, signed vs unsigned, integer promotion, overflow, short-circuit, post vs pre increment, punteros, sizeof arrays vs punteros, null terminator.
+          <div class="code-block">// TRAMPA 1: signed vs unsigned
+unsigned int a = 0;
+int b = -1;
+if (b < a) printf("menor");
+else printf("mayor o igual");
+// Output: "mayor o igual"
+// b se promueve a unsigned → 0xFFFFFFFF > 0
+
+// TRAMPA 2: sizeof
+char s[] = "hello";
+printf("%lu\n", sizeof(s));  // 6 (incluye '\0')
+char *p = "hello";
+printf("%lu\n", sizeof(p));  // 4 u 8 (puntero!)
+
+// TRAMPA 3: precedencia
+int x = 2;
+printf("%d\n", x & 1 == 0);
+// == > & en precedencia
+// x & (1==0) → x & 0 → 0  (no lo que esperabas)</div>
+        </div>
+        <div class="trap">signed vs unsigned: -1 > 0u en C. Integer promotion es trampa #1.</div>
+      </div>
+
+      <div class="topic t-critical">
+        <h4>&#128308; Tipos de Datos Primitivos vs Compuestos</h4>
+        <div class="items">
+          <strong>Primitivos:</strong> int, char, float, double, _Bool, void.<br>
+          <strong>Compuestos:</strong> arrays, structs, unions, enums, punteros.<br>
+          <strong>Embedded:</strong> uint8_t, int16_t, uint32_t (stdint.h, tamano fijo).<br>
+          <strong>sizeof ARM 32-bit:</strong> char=1, short=2, int=4, long=4, float=4, double=8, pointer=4.
+          <div class="code-block">// struct padding
+struct A { char a; int b; char c; };  // sizeof=12 (padding!)
+struct B { int b; char a; char c; };  // sizeof=8 (reordenado)
+// union: todos comparten memoria, sizeof = miembro mas grande</div>
+        </div>
+        <div class="trap">sizeof(struct) != suma de miembros. union comparte memoria.</div>
+      </div>
+
+      <div class="topic t-critical">
+        <h4>&#128308; volatile — Pregunta #1 en entrevistas embedded</h4>
+        <div class="items">
+          <strong>Que hace:</strong> Cada lectura/escritura → acceso real a memoria. Prohibe al compilador cachear/optimizar.<br>
+          <strong>Cuando:</strong> Registros HW, variables de ISR, variables RTOS, registros read-to-clear.<br>
+          <strong>Que NO hace:</strong> No es atomico. No garantiza ordenamiento.
+          <div class="code-block">// Sin volatile → compilador puede optimizar a un solo read
+while (GPIOA->IDR & (1<<0)) {}  // posible loop infinito
+// Con volatile → lee del hardware cada vez
+volatile uint32_t *reg = (volatile uint32_t *)0x40020010;
+while (*reg & (1<<0)) {}  // correcto</div>
+        </div>
+      </div>
+
+      <div class="topic t-critical">
+        <h4>&#128308; Escribir Codigo: Patrones Comunes</h4>
+        <div class="items">
+          <strong>Clasicos:</strong> reverse string, palindrome, binary search, bit manipulation, FizzBuzz, swap sin temp, linked list, find max/min.
+          <div class="code-block">// Bitwise — diario en embedded
+// SET bit N:    reg |=  (1 << N)
+// CLR bit N:    reg &= ~(1 << N)
+// TOGGLE bit N: reg ^=  (1 << N)
+// CHECK bit N:  if (reg & (1 << N))
+
+void reverse(char *s) {
+    int len = strlen(s);
+    for (int i = 0; i < len/2; i++) {
+        char tmp = s[i];
+        s[i] = s[len-1-i];
+        s[len-1-i] = tmp;
+    }
+}
+// Power of 2: n && !(n & (n-1))</div>
+        </div>
+      </div>
+
+      <div class="topic t-high">
+        <h4>&#128992; Punteros, Stack vs Heap</h4>
+        <div class="items">
+          <strong>Stack:</strong> automatico, rapido, limitado (~kB en embedded). <strong>Heap:</strong> malloc/free, fragmentacion, <strong>PROHIBIDO en DO-178C DAL-A</strong>.<br>
+          <strong>Punteros:</strong> int *p = &amp;x; *p dereference; p++ avanza sizeof(int) bytes.<br>
+          <strong>Function pointers:</strong> void (*fp)(int) = &amp;func; — callbacks de ISR.
+        </div>
+        <div class="trap">Stack overflow en embedded es silencioso (sin MMU). malloc prohibido en avionica certificada.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 2: TDD & VERIFICATION -->
+<div class="section open" id="sec-tdd">
+  <div class="section-head" onclick="toggle('sec-tdd')">
+    <h2><span style="color:var(--blue)">&#9679;</span> TDD, Verificacion y Certificacion <span class="tag tag-new">DESDE JOB DESC</span> <span class="tag tag-critical">CRITICA</span></h2>
+    <span class="arrow">&#9654;</span>
+  </div>
+  <div class="section-body">
+    <div class="info-box"><strong>El JD menciona TDD explicitamente</strong> y dedica 4 de 9 responsabilidades a testing/verification/documentation. Esto es la mitad del trabajo diario.</div>
+    <div class="topic-grid">
+      <div class="topic t-critical">
+        <h4>&#128308; TDD (Test-Driven Development)</h4>
+        <div class="items">
+          <strong>Ciclo:</strong> <code>Red</code> (test que falla) → <code>Green</code> (codigo minimo que pasa) → <code>Refactor</code> (limpiar sin romper tests).<br>
+          <strong>En embedded:</strong> Compilar para host (PC), mockear hardware, correr tests con Unity/CppUTest.<br>
+          <strong>En avionica:</strong> Cada test verifica un requisito. Sin test = sin certificacion.
+          <div class="code-block">// Ejemplo TDD
+// PASO 1 Red: test primero
+void test_checksum_empty(void) {
+    uint8_t buf[] = {};
+    TEST_ASSERT_EQUAL(0, calc_checksum(buf, 0));
+}
+// PASO 2 Green: implementacion minima
+uint8_t calc_checksum(uint8_t *buf, size_t len) {
+    uint8_t sum = 0;
+    for (size_t i = 0; i < len; i++) sum ^= buf[i];
+    return sum;
+}
+// PASO 3: Refactor si necesario</div>
+        </div>
+      </div>
+
+      <div class="topic t-critical">
+        <h4>&#128308; DO-178C — Certificacion Software Aeronautico</h4>
+        <div class="items">
+          <strong>Que es:</strong> Estandar internacional para SW aeronautico. Joby/Aeronautical SW lo siguen para FAA.<br>
+          <strong>DAL:</strong> A=catastrofico (MC/DC), B=peligroso (decision cov), C=mayor (statement cov), D=menor, E=sin efecto.<br>
+          <strong>Conceptos clave:</strong> Traceability bidireccional, independence (quien escribe ≠ quien verifica), MC/DC, no dynamic allocation, determinismo, particion espacial (MPU) y temporal.
+        </div>
+      </div>
+
+      <div class="topic t-critical">
+        <h4>&#128308; MISRA C — Subconjunto Seguro de C</h4>
+        <div class="items">
+          <strong>Reglas principales:</strong> No malloc/free, no recursion, no goto, siempre usar {} en if/else, no casting implicito peligroso, siempre inicializar variables, no side effects en argumentos (x++ en args = prohibido).
+        </div>
+      </div>
+
+      <div class="topic t-high">
+        <h4>&#128992; Test Coverage</h4>
+        <div class="items">
+          <strong>Statement:</strong> cada linea ejecutada. <strong>Decision/Branch:</strong> cada if true y false. <strong>MC/DC:</strong> cada condicion individual afecta resultado independientemente (DAL-A).
+          <div class="code-block">// MC/DC para: if (A && B)
+// Test 1: A=T, B=T → true   (baseline)
+// Test 2: A=F, B=T → false  (A cambio resultado)
+// Test 3: A=T, B=F → false  (B cambio resultado)
+// Solo 3 tests, no 4.</div>
+        </div>
+      </div>
+
+      <div class="topic t-high">
+        <h4>&#128992; Requirements Writing</h4>
+        <div class="items">
+          <strong>Formato:</strong> "The system <em>shall</em> [accion] [condicion] [criterio]." Cada req debe ser verificable y no ambiguo.<br>
+          <strong>Ej:</strong> "The system shall calculate motor temperature at 100 Hz ± 1%."<br>
+          <strong>Traceability:</strong> System Req → SW Req → Design → Code → Test → Result. Bidireccional.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 3: HARDWARE -->
+<div class="section" id="sec-hw">
+  <div class="section-head" onclick="toggle('sec-hw')">
+    <h2><span style="color:var(--orange)">&#9679;</span> Electronica, Circuitos y Hardware <span class="tag tag-high">ALTA</span></h2>
+    <span class="arrow">&#9654;</span>
+  </div>
+  <div class="section-body">
+    <div class="topic-grid">
+      <div class="topic t-critical">
+        <h4>&#128308; Protocolos: SPI vs I2C vs UART vs CAN</h4>
+        <div class="items">
+          <strong>UART:</strong> Asincrono, 2 cables TX/RX, 115200, frame 8N1, punto a punto. Debug.<br>
+          <strong>SPI:</strong> Sincrono SCLK, 3+N cables, full-duplex, ~50MHz. Flash, ADC, IMU.<br>
+          <strong>I2C:</strong> Sincrono SCL, 2+pull-ups, half-duplex, 7-bit addr, ACK/NACK, 400kHz.<br>
+          <strong>CAN:</strong> Diferencial, multi-master, arbitraje por ID, 120Ω term, 1Mbps. <strong>ARINC 825.</strong>
+        </div>
+        <div class="trap">Mas rapido=SPI. Menos cables=I2C. Mas robusto/avionica=CAN. I2C necesita pull-ups.</div>
+      </div>
+      <div class="topic t-high">
+        <h4>&#128992; ADC/DAC</h4>
+        <div class="items">
+          <strong>LSB = V_ref / 2^N.</strong> 12-bit 3.3V → LSB=0.806mV. Max=4095 (no 4096).<br>
+          <strong>Nyquist: f_s ≥ 2*f_max.</strong> Aliasing = IRREVERSIBLE. Anti-aliasing obligatorio.<br>
+          SAR=tu Cortex-M. Sigma-Delta=precision. Flash=ultra-rapido.
+        </div>
+      </div>
+      <div class="topic t-high">
+        <h4>&#128992; ARM Cortex-M Arquitectura</h4>
+        <div class="items">
+          <strong>Registros:</strong> R0-R3 args, R4-R11 callee-saved, R13=SP, R14=LR, R15=PC.<br>
+          <strong>Harvard modificado.</strong> Pipeline 3 etapas (Cortex-M3/M4). NVIC 240 IRQs.
+        </div>
+        <div class="trap">Cortex-M3/M4 = 3 etapas (no 5). STM32F4 NO tiene data cache.</div>
+      </div>
+      <div class="topic t-medium">
+        <h4>&#128993; Logica Digital + Transistores</h4>
+        <div class="items">
+          Compuertas, DeMorgan, K-maps, complemento a 2, flip-flops, setup/hold.<br>
+          BJT switch: saturacion=ON, β_forzado=10. MOSFET: V_GS>V_th=ON, R_DS(on) mΩ.
+        </div>
+        <div class="trap">"Saturacion" = ON en BJT = amplificador en MOSFET (opuestos).</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 4: EMBEDDED & RTOS -->
+<div class="section" id="sec-embedded">
+  <div class="section-head" onclick="toggle('sec-embedded')">
+    <h2><span style="color:var(--yellow)">&#9679;</span> Embedded Systems &amp; RTOS <span class="tag tag-high">ALTA</span></h2>
+    <span class="arrow">&#9654;</span>
+  </div>
+  <div class="section-body">
+    <div class="topic-grid">
+      <div class="topic t-critical">
+        <h4>&#128308; RTOS Conceptos (Desired en JD)</h4>
+        <div class="items">
+          <strong>FreeRTOS:</strong> Tareas con stack propio (PSP), scheduler preemptive por prioridad.<br>
+          <strong>Sincronizacion:</strong> Semaforo (contador), Mutex (owner + priority inheritance), Queue (datos).<br>
+          <strong>Priority inversion:</strong> Tarea alta bloqueada por baja. Fix: priority inheritance en mutex.<br>
+          <strong>Context switch:</strong> PendSV. SysTick = tick (1ms).
+        </div>
+        <div class="trap">Mutex ≠ Semaforo. Mutex tiene owner. Semaforo es solo contador.</div>
+      </div>
+      <div class="topic t-high">
+        <h4>&#128992; Memory-Mapped I/O + Interrupts + DMA</h4>
+        <div class="items">
+          No hay I/O especial en ARM. Todo volatile + direccion. Siempre read-modify-write para bits.<br>
+          <strong>Polling:</strong> simple, desperdicia CPU. <strong>Interrupts:</strong> hardware avisa, CPU libre. <strong>DMA:</strong> sin CPU.
+          <div class="code-block">#define GPIOA_ODR (*((volatile uint32_t *)0x40020014))
+GPIOA_ODR |= (1 << 5);   // SET bit 5
+GPIOA_ODR &= ~(1 << 5);  // CLR bit 5</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 5: REASONING -->
+<div class="section" id="sec-reasoning">
+  <div class="section-head" onclick="toggle('sec-reasoning')">
+    <h2><span style="color:var(--purple)">&#9679;</span> Reasoning (26 min) <span class="tag tag-reasoning">RAZONAMIENTO</span></h2>
+    <span class="arrow">&#9654;</span>
+  </div>
+  <div class="section-body">
+    <div class="tip-box"><strong>Estrategia:</strong> ~60 seg/pregunta max. Si no sale, marcar y seguir. Papel y lapiz a mano.</div>
+    <div class="topic-grid">
+      <div class="topic" style="border-left-color:var(--purple)">
+        <h4>&#128995; Secuencias Numericas</h4>
+        <div class="items">Diferencias sucesivas. Si no hay patron, diferencias de diferencias.<br><strong>Ej:</strong> 2,5,10,17,26,? → Diffs: 3,5,7,9 → Diffs²: 2,2,2 → next=11 → <strong>37</strong></div>
+      </div>
+      <div class="topic" style="border-left-color:var(--purple)">
+        <h4>&#128995; Espejos, Rotaciones, Contar Figuras</h4>
+        <div class="items">
+          Buscar detalle asimetrico y rastrear. Espejo horiz: izq↔der. Rotacion 90°: arriba→derecha.<br>
+          Cuadrados en NxN: Σ(i²). <strong>3×3:</strong> 14. <strong>4×4:</strong> 30. Contar por tamano sistematicamente.
+        </div>
+      </div>
+      <div class="topic" style="border-left-color:var(--purple)">
+        <h4>&#128995; Matrices con Patron</h4>
+        <div class="items">Matrices 3×3 con ?: regla por fila O columna. Patrones: rotacion, adicion, alternancia, XOR visual.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 6: ENGLISH -->
+<div class="section" id="sec-english">
+  <div class="section-head" onclick="toggle('sec-english')">
+    <h2><span style="color:var(--teal)">&#9679;</span> English + HR Interviews <span class="tag tag-english">ENGLISH</span></h2>
+    <span class="arrow">&#9654;</span>
+  </div>
+  <div class="section-body">
+    <div class="info-box"><strong>JD dice "Strong written and verbal English"</strong> — no solo funcional. Documentacion tecnica, code reviews, comunicacion con US teams.</div>
+    <div class="topic-grid">
+      <div class="topic" style="border-left-color:var(--teal)">
+        <h4>&#9999;&#65039; Writing (10 min) + Speaking (5 min)</h4>
+        <div class="items">
+          <strong>Writing:</strong> Topic sentence → 2-3 supporting → Conclusion. ~100-150 palabras. Vocab: embedded, safety-critical, verification, compliance, traceability.<br>
+          <strong>Speaking pitch:</strong> "I'm [name], [grad/student] from TEC in [field]. Passionate about embedded systems and safety-critical software. Experience with C/C++, ARM, SPI/I2C/CAN. Excited about Aeronautical SW for eVTOL certification with Joby Aviation."<br>
+          <strong>Errores:</strong> "I am agree" → I agree. "depends of" → depends on.
+        </div>
+      </div>
+      <div class="topic" style="border-left-color:var(--green)">
+        <h4>&#128172; Preguntas HR / Engineering / Senior Manager</h4>
+        <div class="items">
+          <strong>"Previous experiences"</strong> → STAR: Situation, Task, Action, Result.<br>
+          <strong>"Which areas?"</strong> → Firmware, verification, safety-critical. Mencionar TDD, DO-178C.<br>
+          <strong>"Why Aeronautical SW?"</strong> → eVTOL revolution, FAA certification, US+Dubai launch, next-gen avionics.<br>
+          <strong>"Coding standards?"</strong> → MISRA C, DO-178C, traceability, code reviews.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKLIST -->
+<div class="section open" id="sec-checklist">
+  <div class="section-head" onclick="toggle('sec-checklist')">
+    <h2><span style="color:var(--green)">&#9679;</span> Checklist de Repaso Final <span class="tag tag-critical">ANTES DEL EXAMEN</span></h2>
+    <span class="arrow">&#9654;</span>
+  </div>
+  <div class="section-body">
+    <div class="check-group">
+      <h4>&#128308; Codigo C — debo poder hacer esto dormido</h4>
+      <div class="check-item"><input type="checkbox" onchange="toggleCheck(this)"> Predecir output con punteros, ++, sizeof, casting, signed/unsigned</div>
+      <div class="check-item"><input type="checkbox" onchange="toggleCheck(this)"> Explicar primitivos vs compuestos (con sizeof)</div>
+      <div class="check-item"><input type="checkbox" onchange="toggleCheck(this)"> Escribir: reverse string, binary search, bit ops SET/CLR/TOG/CHK</div>
+      <div class="check-item"><input type="checkbox" onchange="toggleCheck(this)"> volatile: que hace, cuando, que NO hace</div>
+      <div class="check-item"><input type="checkbox" onchange="toggleCheck(this)"> struct padding, union, sizeof traps</div>
+      <div class="check-item"><input type="checkbox" onchange="toggleCheck(this)"> Stack vs heap, por que no malloc en DO-178C</div>
+    </div>
+    <div class="check-group">
+      <h4>&#128309; TDD y Verificacion — lo que te diferencia</h4>
+      <div class="check-item"><input type="checkbox" onchange="toggleCheck(this)"> Explicar ciclo TDD: Red → Green → Refactor</div>
+      <div class="check-item"><input type="checkbox" onchange="toggleCheck(this)"> DO-178C: que es, DAL levels, MC/DC, traceability</div>
+      <div class="check-item"><input type="checkbox" onchange="toggleCheck(this)"> MISRA C: 5 reglas principales que puedo nombrar</div>
+      <div class="check-item"><input type="checkbox" onchange="toggleCheck(this)"> Statement vs decision vs MC/DC coverage</div>
+      <div class="check-item"><input type="checkbox" onchange="toggleCheck(this)"> Traceability bidireccional en 30 segundos</div>
+    </div>
+    <div class="check-group">
+      <h4>&#128992; Hardware y Embedded</h4>
+      <div class="check-item"><input type="checkbox" onchange="toggleCheck(this)"> SPI vs I2C vs UART vs CAN (cables, velocidad, cuando usar)</div>
+      <div class="check-item"><input type="checkbox" onchange="toggleCheck(this)"> ADC: SAR, LSB formula, Nyquist, aliasing</div>
+      <div class="check-item"><input type="checkbox" onchange="toggleCheck(this)"> ARM Cortex-M: registros, pipeline 3 etapas, NVIC</div>
+      <div class="check-item"><input type="checkbox" onchange="toggleCheck(this)"> Interrupts vs polling vs DMA</div>
+      <div class="check-item"><input type="checkbox" onchange="toggleCheck(this)"> RTOS: tareas, mutex vs semaforo, priority inversion</div>
+    </div>
+    <div class="check-group">
+      <h4>&#128995; Reasoning — practicar al menos 10 de cada</h4>
+      <div class="check-item"><input type="checkbox" onchange="toggleCheck(this)"> Secuencias numericas</div>
+      <div class="check-item"><input type="checkbox" onchange="toggleCheck(this)"> Espejos y rotaciones</div>
+      <div class="check-item"><input type="checkbox" onchange="toggleCheck(this)"> Contar cuadrados/triangulos</div>
+      <div class="check-item"><input type="checkbox" onchange="toggleCheck(this)"> Matrices 3x3 con patron</div>
+    </div>
+    <div class="check-group">
+      <h4>&#128994; English — preparado y practicado en voz alta</h4>
+      <div class="check-item"><input type="checkbox" onchange="toggleCheck(this)"> Pitch 30 seg (quien soy, que se, por que Aeronautical SW / Joby)</div>
+      <div class="check-item"><input type="checkbox" onchange="toggleCheck(this)"> 2 historias STAR de proyectos tecnicos</div>
+      <div class="check-item"><input type="checkbox" onchange="toggleCheck(this)"> Parrafo de practica en menos de 5 min</div>
+      <div class="check-item"><input type="checkbox" onchange="toggleCheck(this)"> "Why Aeronautical SW?" (eVTOL, FAA, US+Dubai, safety-critical)</div>
+    </div>
+    <div class="check-group">
+      <h4>&#128295; Logistica — dia del examen</h4>
+      <div class="check-item"><input type="checkbox" onchange="toggleCheck(this)"> Camara y microfono testeados</div>
+      <div class="check-item"><input type="checkbox" onchange="toggleCheck(this)"> Internet estable, lugar silencioso</div>
+      <div class="check-item"><input type="checkbox" onchange="toggleCheck(this)"> Papel, lapiz, reloj visible</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOP 10 TRAPS -->
+<div class="section" id="sec-traps">
+  <div class="section-head" onclick="toggle('sec-traps')">
+    <h2><span style="color:var(--red)">&#9679;</span> Top 10 Trampas Tecnicas <span class="tag tag-critical">&#9888;</span></h2>
+    <span class="arrow">&#9654;</span>
+  </div>
+  <div class="section-body">
+    <div class="topic t-critical">
+      <div class="items" style="font-size:12.5px; line-height:2.2;">
+        <strong>1.</strong> <code>signed vs unsigned</code> — (-1 &lt; 0u) es <strong>falso</strong> en C<br>
+        <strong>2.</strong> <code>sizeof(array) vs sizeof(pointer)</code> — array decae a puntero en funcion<br>
+        <strong>3.</strong> <code>"saturacion"</code> = ON en BJT = <strong>amplificador</strong> en MOSFET<br>
+        <strong>4.</strong> <code>volatile ≠ atomic</code> — no protege entre bytes en ISR<br>
+        <strong>5.</strong> <code>Cortex-M3/M4 = 3 etapas</code>, no 5<br>
+        <strong>6.</strong> <code>ADC max = 2^N - 1</code>, no 2^N<br>
+        <strong>7.</strong> <code>Aliasing irreversible</code> despues del ADC<br>
+        <strong>8.</strong> <code>I2C necesita pull-ups</code> (open-drain)<br>
+        <strong>9.</strong> <code>malloc prohibido</code> en DO-178C DAL-A<br>
+        <strong>10.</strong> <code>Mutex ≠ Semaforo</code> — mutex tiene owner + priority inheritance
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GAPS -->
+<div class="section" id="sec-gaps">
+  <div class="section-head" onclick="toggle('sec-gaps')">
+    <h2><span style="color:var(--orange)">&#9679;</span> Gaps: Lo que Falta Estudiar <span class="tag tag-high">ACCION</span></h2>
+    <span class="arrow">&#9654;</span>
+  </div>
+  <div class="section-body">
+    <div class="warn-box"><strong>Modulo 5 (C embedded, RTOS, DO-178C, MISRA, TDD) no se completo.</strong> Estos temas son exactamente lo que pide el JD. Prioridad #1.</div>
+    <div class="topic-grid">
+      <div class="topic t-critical">
+        <h4>&#128308; P1: TDD practico</h4>
+        <div class="items">Escribir 3-5 funciones con ciclo Red/Green/Refactor. El JD dice literalmente "Test-Driven Development environment".</div>
+      </div>
+      <div class="topic t-critical">
+        <h4>&#128308; P2: Predecir output de codigo C</h4>
+        <div class="items">20+ ejercicios. Buscar "C output prediction quiz" o "C tricky output questions".</div>
+      </div>
+      <div class="topic t-high">
+        <h4>&#128992; P3: RTOS conceptual</h4>
+        <div class="items">Capitulos 1-5 de "Mastering FreeRTOS" (gratis). Tareas, queues, mutex, priority inversion.</div>
+      </div>
+      <div class="topic t-high">
+        <h4>&#128992; P4: Reasoning practice</h4>
+        <div class="items">"IQ test patterns", "figure counting", "number sequences". 30 min/dia.</div>
+      </div>
+      <div class="topic t-medium">
+        <h4>&#128993; P5: English speaking</h4>
+        <div class="items">Pitch en voz alta 3x/dia. Grabar y escuchar. 2 historias STAR completas.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  Mapa de Preparacion — Aeronautical SW / Joby Aviation · Embedded Software Engineer<br>
+  Basado en: resenas (sep 2025, ene 2026) + job description oficial + modulos 1-4<br>
+  Mayo 2026
+</div>
+
+<script>
+function toggle(id) { document.getElementById(id).classList.toggle('open'); }
+function toggleCheck(el) { el.parentElement.classList.toggle('checked', el.checked); }
+</script>
+</body>
+</html>

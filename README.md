@@ -2,7 +2,7 @@
 
 Short notes on tools, languages, and engineering tricks I pick up along the way.
 
-**9 entries** across **5 categories**
+**9 entries** across **6 categories**
 
 ---
 
@@ -33,6 +33,16 @@ _See [c/README.md](c/README.md) for the full index._
 | Entry | Tags |
 |-------|------|
 | [Gotchas and Idioms](c/gotchas-and-idioms.md) | `c`, `gotchas`, `idioms`, `pointers`, `strings`, `undefined-behavior` |
+
+### Prior Knowledge
+_Embedded systems curriculum — 4 modules with summaries and cheat sheets. See [prior_knowledge/README.md](prior_knowledge/README.md)._
+
+| Module | Topic |
+|--------|-------|
+| [Module 1](prior_knowledge/module1/) | Logic Circuits |
+| [Module 2](prior_knowledge/module2/) | Analog Circuits |
+| [Module 3](prior_knowledge/module3/) | Advanced Digital Systems |
+| [Module 4](prior_knowledge/module4/) | Computer Architecture |
 
 ### WSL (1 entry)
 | Entry | Tags |

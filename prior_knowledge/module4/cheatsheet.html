@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cheat Sheet — Módulo 4: Arquitectura de Computadores</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #21262d;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --blue: #58a6ff;
+    --green: #3fb950;
+    --yellow: #d29922;
+    --orange: #f0883e;
+    --red: #ff7b72;
+    --purple: #bc8cff;
+    --teal: #39d353;
+    --cyan: #56d364;
+    --pink: #f78166;
+    --tag-int: #1f4477;
+    --tag-int-t: #58a6ff;
+    --tag-core: #1a3a1f;
+    --tag-core-t: #3fb950;
+    --tag-trap: #4a1a1a;
+    --tag-trap-t: #ff7b72;
+    --tag-avio: #2a1a4a;
+    --tag-avio-t: #bc8cff;
+    --tag-fw: #1a2e2a;
+    --tag-fw-t: #39d353;
+    --tag-calc: #3a2a0a;
+    --tag-calc-t: #d29922;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 16px;
+  }
+  .page-title {
+    text-align: center;
+    padding: 12px 0 4px;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--blue);
+    letter-spacing: 0.5px;
+  }
+  .page-subtitle {
+    text-align: center;
+    color: var(--muted);
+    font-size: 11px;
+    margin-bottom: 16px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    break-inside: avoid;
+  }
+  .card.span2 { grid-column: span 2; }
+  .card.span3 { grid-column: span 3; }
+  .card-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .dot-blue { background: var(--blue); }
+  .dot-green { background: var(--green); }
+  .dot-yellow { background: var(--yellow); }
+  .dot-red { background: var(--red); }
+  .dot-purple { background: var(--purple); }
+  .dot-orange { background: var(--orange); }
+  .dot-teal { background: var(--teal); }
+  .dot-cyan { background: var(--cyan); }
+
+  .tag {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    vertical-align: middle;
+    margin-left: 4px;
+  }
+  .tag-int { background: var(--tag-int); color: var(--tag-int-t); }
+  .tag-core { background: var(--tag-core); color: var(--tag-core-t); }
+  .tag-trap { background: var(--tag-trap); color: var(--tag-trap-t); }
+  .tag-avio { background: var(--tag-avio); color: var(--tag-avio-t); }
+  .tag-fw { background: var(--tag-fw); color: var(--tag-fw-t); }
+  .tag-calc { background: var(--tag-calc); color: var(--tag-calc-t); }
+
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    background: var(--bg3);
+    color: var(--muted);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 4px 6px;
+    text-align: left;
+    font-weight: 600;
+  }
+  td { padding: 3px 6px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg3); }
+
+  code, .mono {
+    font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    font-size: 11px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 0 4px;
+    color: var(--orange);
+  }
+  .code-block {
+    font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    font-size: 11px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 8px 10px;
+    color: var(--text);
+    line-height: 1.7;
+    white-space: pre;
+    overflow-x: auto;
+    margin-top: 6px;
+  }
+  .kw { color: var(--blue); }
+  .cmt { color: var(--muted); font-style: italic; }
+  .str { color: var(--green); }
+  .num { color: var(--orange); }
+  .reg { color: var(--purple); }
+  .fn { color: var(--yellow); }
+  .warn { color: var(--red); font-weight: 600; }
+  .ok { color: var(--green); font-weight: 600; }
+
+  .row { display: flex; gap: 6px; margin-bottom: 5px; align-items: flex-start; }
+  .row-label { color: var(--muted); min-width: 80px; font-size: 11px; }
+  .row-val { color: var(--text); }
+  .hl { color: var(--yellow); font-weight: 600; }
+  .hl-blue { color: var(--blue); font-weight: 600; }
+  .hl-green { color: var(--green); font-weight: 600; }
+  .hl-red { color: var(--red); font-weight: 600; }
+  .hl-purple { color: var(--purple); font-weight: 600; }
+
+  .pill {
+    display: inline-block;
+    font-size: 10px;
+    padding: 1px 7px;
+    border-radius: 10px;
+    font-weight: 600;
+    margin: 1px;
+  }
+  .pill-blue { background: #1f4477; color: var(--blue); }
+  .pill-green { background: #1a3a1f; color: var(--green); }
+  .pill-red { background: #4a1a1a; color: var(--red); }
+  .pill-yellow { background: #3a2a0a; color: var(--yellow); }
+  .pill-purple { background: #2a1a4a; color: var(--purple); }
+  .pill-orange { background: #3a2010; color: var(--orange); }
+  .pill-teal { background: #1a2e2a; color: var(--teal); }
+
+  .warn-box {
+    background: #2d1a1a;
+    border: 1px solid var(--red);
+    border-left: 3px solid var(--red);
+    border-radius: 5px;
+    padding: 6px 10px;
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--red);
+  }
+  .ok-box {
+    background: #1a2d1a;
+    border: 1px solid var(--green);
+    border-left: 3px solid var(--green);
+    border-radius: 5px;
+    padding: 6px 10px;
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--green);
+  }
+  .note-box {
+    background: #1a2235;
+    border: 1px solid var(--blue);
+    border-left: 3px solid var(--blue);
+    border-radius: 5px;
+    padding: 6px 10px;
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--blue);
+  }
+
+  .pipeline-row {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 3px;
+    align-items: center;
+  }
+  .stage {
+    min-width: 38px;
+    text-align: center;
+    padding: 3px 2px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .stage-label {
+    font-size: 10px;
+    color: var(--muted);
+    min-width: 95px;
+  }
+  .s-fetch { background: #1a3060; color: var(--blue); }
+  .s-decode { background: #1a3a2a; color: var(--green); }
+  .s-exec { background: #3a2010; color: var(--orange); }
+  .s-mem { background: #2a1a4a; color: var(--purple); }
+  .s-wb { background: #1a2e35; color: var(--teal); }
+  .s-stall { background: #2d2d2d; color: var(--muted); border: 1px dashed var(--border); }
+  .spacer { min-width: 38px; }
+
+  .reg-block {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .reg-name { color: var(--purple); font-family: monospace; font-weight: 700; min-width: 55px; font-size: 12px; }
+  .reg-desc { color: var(--muted); font-size: 11px; }
+  .reg-use { color: var(--text); font-size: 11px; }
+
+  .mem-row {
+    display: flex;
+    align-items: stretch;
+    margin-bottom: 2px;
+  }
+  .mem-addr { color: var(--muted); font-family: monospace; font-size: 10px; min-width: 62px; padding: 3px 4px; }
+  .mem-entry {
+    flex: 1;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  h4 { color: var(--muted); font-size: 11px; font-weight: 600; margin: 7px 0 3px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .formula {
+    font-family: 'Cascadia Code', monospace;
+    font-size: 12px;
+    color: var(--yellow);
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 5px 10px;
+    margin: 4px 0;
+    display: block;
+  }
+
+  .section-divider {
+    margin: 12px 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-divider span {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+  .section-divider::before, .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+  @media print {
+    body { padding: 8px; font-size: 12px; }
+    .grid { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-title">🖥️ Módulo 4: Arquitectura de Computadores</div>
+<div class="page-subtitle">Preparación Aeronautical SW / Joby Aviation — Embedded Software Engineer | Mayo 2026</div>
+
+<!-- ROW 1: Von Neumann, ISA, Registros -->
+<div class="grid">
+
+  <!-- Von Neumann vs Harvard -->
+  <div class="card">
+    <div class="card-title"><span class="dot dot-blue"></span> Von Neumann vs Harvard <span class="tag tag-int">entrevista</span></div>
+
+    <h4>Von Neumann</h4>
+    <div class="row"><span class="row-label">Buses:</span><span class="row-val"><span class="hl-red">1 compartido</span> (instrucciones + datos)</span></div>
+    <div class="row"><span class="row-label">Problema:</span><span class="row-val">Von Neumann bottleneck — solo una cosa a la vez</span></div>
+    <div class="row"><span class="row-label">Usado en:</span><span class="row-val">x86 PCs, sistemas propósito general</span></div>
+
+    <h4>Harvard</h4>
+    <div class="row"><span class="row-label">Buses:</span><span class="row-val"><span class="hl-green">2 separados</span> — instrucciones Y datos en paralelo</span></div>
+    <div class="row"><span class="row-label">Ventaja:</span><span class="row-val">Doble ancho de banda efectivo</span></div>
+    <div class="row"><span class="row-label">Usado en:</span><span class="row-val">DSPs, AVR, PIC</span></div>
+
+    <h4>Modified Harvard — ARM Cortex-M ⭐</h4>
+    <div class="row"><span class="row-label">Buses:</span><span class="row-val"><span class="hl-blue">Múltiples internos</span>, un solo espacio de addr</span></div>
+    <table style="margin-top:4px">
+      <tr><td><code>I-Code</code></td><td>instrucciones desde Flash</td></tr>
+      <tr><td><code>D-Code</code></td><td>constantes/datos desde Flash</td></tr>
+      <tr><td><code>System</code></td><td>SRAM, periféricos, resto</td></tr>
+      <tr><td><code>DMA</code></td><td>independiente del core</td></tr>
+    </table>
+    <div class="ok-box">DMA transfiere por System bus mientras core ejecuta por I-Code → simultáneo, sin espera</div>
+  </div>
+
+  <!-- ISA: RISC vs CISC + Thumb-2 -->
+  <div class="card">
+    <div class="card-title"><span class="dot dot-green"></span> ISA: RISC vs CISC <span class="tag tag-int">entrevista</span></div>
+
+    <table>
+      <tr><th></th><th>RISC (ARM)</th><th>CISC (x86)</th></tr>
+      <tr><td>Instrucciones</td><td class="hl-green">Pocas, simples</td><td>Muchas, complejas</td></tr>
+      <tr><td>Ancho</td><td><span class="hl-green">Fijo</span> (32 bits)</td><td>Variable (1–15B)</td></tr>
+      <tr><td>Responsable</td><td>Compilador</td><td>Hardware</td></tr>
+      <tr><td>Pipeline</td><td class="hl-green">Fácil</td><td>Complejo</td></tr>
+      <tr><td>Ejemplos</td><td>ARM, MIPS, RISC-V</td><td>Intel, AMD64</td></tr>
+    </table>
+
+    <h4>Thumb-2 (Cortex-M4)</h4>
+    <div class="row"><span class="row-label">Mezcla:</span><span class="row-val">instrucciones de 16 y 32 bits</span></div>
+    <div class="row"><span class="row-label">Solo modo:</span><span class="row-val">Cortex-M4 <span class="hl-red">SOLO ejecuta Thumb-2</span></span></div>
+
+    <div class="warn-box">⚠ Bit 0 del PC DEBE ser 1 (modo Thumb). Branch a dirección par → HardFault</div>
+
+    <h4>Modos de Direccionamiento</h4>
+    <table>
+      <tr><td><code>MOV R0, #42</code></td><td>Inmediato</td></tr>
+      <tr><td><code>ADD R2, R0, R1</code></td><td>Registro</td></tr>
+      <tr><td><code>LDR R0, [R1, #8]</code></td><td>Base + offset (struct field)</td></tr>
+      <tr><td><code>LDR R0, [R1, R2, LSL #2]</code></td><td>array[i] con escala</td></tr>
+      <tr><td><code>LDR R0, [R1, #4]!</code></td><td>Pre-indexed (R1 += 4 antes)</td></tr>
+      <tr><td><code>LDR R0, [R1], #4</code></td><td>Post-indexed (R1 += 4 después)</td></tr>
+    </table>
+  </div>
+
+  <!-- Registros -->
+  <div class="card">
+    <div class="card-title"><span class="dot dot-purple"></span> Registros ARM Cortex-M4 <span class="tag tag-core">core</span></div>
+
+    <div class="reg-block"><span class="reg-name">R0–R3</span><span class="reg-desc">Caller-saved |</span><span class="reg-use"> args (≤4) / return / scratch</span></div>
+    <div class="reg-block"><span class="reg-name">R4–R7</span><span class="reg-desc">Callee-saved |</span><span class="reg-use"> locals, push/pop si se usan</span></div>
+    <div class="reg-block"><span class="reg-name">R8–R11</span><span class="reg-desc">Callee-saved |</span><span class="reg-use"> high regs, solo Thumb-32</span></div>
+    <div class="reg-block"><span class="reg-name">R12</span><span class="reg-desc">Scratch |</span><span class="reg-use"> intra-call clobber</span></div>
+    <div class="reg-block"><span class="reg-name">R13/SP</span><span class="reg-desc">Stack Ptr |</span><span class="reg-use"> MSP o PSP según CONTROL[0]</span></div>
+    <div class="reg-block"><span class="reg-name">R14/LR</span><span class="reg-desc">Link Reg |</span><span class="reg-use"> return addr / EXC_RETURN en ISR</span></div>
+    <div class="reg-block"><span class="reg-name">R15/PC</span><span class="reg-desc">Prog Counter |</span><span class="reg-use"> próxima instrucción</span></div>
+    <div class="reg-block"><span class="reg-name">xPSR</span><span class="reg-desc">Status |</span><span class="reg-use"> <span class="hl-red">N</span> <span class="hl-yellow">Z</span> <span class="hl-blue">C</span> <span class="hl-purple">V</span> T ISR#</span></div>
+    <div class="reg-block"><span class="reg-name">MSP</span><span class="reg-desc">Main SP |</span><span class="reg-use"> OS/IRQ/kernel</span></div>
+    <div class="reg-block"><span class="reg-name">PSP</span><span class="reg-desc">Process SP |</span><span class="reg-use"> cada tarea RTOS tiene el suyo</span></div>
+
+    <h4>Flags xPSR</h4>
+    <table>
+      <tr><td class="hl-red">N</td><td>Negative — resultado negativo (signed)</td></tr>
+      <tr><td class="hl-yellow">Z</td><td>Zero — resultado == 0 (if/while)</td></tr>
+      <tr><td class="hl-blue">C</td><td>Carry — unsigned overflow / carry-out</td></tr>
+      <tr><td class="hl-purple">V</td><td>oVerflow — signed overflow (int wraparound)</td></tr>
+    </table>
+    <div class="note-box">AAPCS: R0 = return value. R0–R3 = 4 argumentos. Más args → stack. R0:R1 para retorno 64-bit.</div>
+  </div>
+</div>
+
+<!-- ROW 2: Pipeline + Instrucciones -->
+<div class="section-divider"><span>Pipeline & Instrucciones</span></div>
+<div class="grid">
+
+  <!-- Pipeline hazards -->
+  <div class="card span2">
+    <div class="card-title"><span class="dot dot-orange"></span> Pipeline <span class="tag tag-int">entrevista</span><span class="tag tag-calc">cálculo</span></div>
+
+    <div class="two-col">
+      <div>
+        <h4>5 Etapas Clásico (concepto)</h4>
+        <div style="margin: 4px 0">
+          <div class="pipeline-row"><span class="stage-label">I1: ADD R2, R0, R1</span><span class="stage s-fetch">IF</span><span class="stage s-decode">ID</span><span class="stage s-exec">EX</span><span class="stage s-mem">MEM</span><span class="stage s-wb">WB</span></div>
+          <div class="pipeline-row"><span class="stage-label">I2: SUB R4, R2, R3</span><span class="spacer"></span><span class="stage s-fetch">IF</span><span class="stage s-stall">stall</span><span class="stage s-stall">stall</span><span class="stage s-decode">ID</span><span class="stage s-exec">EX</span></div>
+          <div class="pipeline-row"><span class="stage-label">I3: AND R5, R6, R7</span><span class="spacer"></span><span class="spacer"></span><span class="stage s-fetch">IF</span><span class="stage s-stall">stall</span><span class="stage s-stall">stall</span><span class="stage s-decode">ID</span></div>
+        </div>
+        <div class="warn-box">⚠ RAW hazard: I2 necesita R2 que I1 no terminó de escribir → 2 stalls sin forwarding</div>
+        <div class="ok-box">Con forwarding EX→EX: 0 stalls. Load-use: 1 stall inevitable (dato llega en MEM).</div>
+
+        <h4>Cortex-M3/M4: 3 etapas</h4>
+        <div class="row"><span class="row-label">Etapas:</span><span class="row-val"><span class="stage s-fetch" style="display:inline">Fetch</span> → <span class="stage s-decode" style="display:inline">Decode</span> → <span class="stage s-exec" style="display:inline">Execute</span></span></div>
+        <div class="warn-box">⚠ PC durante ejecución = addr_actual + 4 (2 instrucciones adelante, herencia de 3 etapas)</div>
+        <div class="row" style="margin-top:4px"><span class="row-label">Branch penalty:</span><span class="row-val">≈ 3–4 ciclos (vs ~15 en desktop)</span></div>
+      </div>
+
+      <div>
+        <h4>Los 3 Tipos de Hazard <span class="tag tag-int">entrevista</span></h4>
+        <table>
+          <tr><th>Tipo</th><th>Causa</th><th>Solución</th></tr>
+          <tr>
+            <td><span class="hl-red">Data (RAW)</span></td>
+            <td>I2 lee lo que I1 escribe</td>
+            <td>Forwarding, reorder, NOP</td>
+          </tr>
+          <tr>
+            <td><span class="hl-yellow">Control</span></td>
+            <td>Branch cambia PC</td>
+            <td>Branch prediction, flush, unroll</td>
+          </tr>
+          <tr>
+            <td><span class="hl-purple">Structural</span></td>
+            <td>Dos instrs. necesitan mismo HW</td>
+            <td>Cache I/D separada, más unidades</td>
+          </tr>
+        </table>
+
+        <h4>Latencias de Instrucciones (Cortex-M4)</h4>
+        <table>
+          <tr><td>ADD, SUB, AND, MOV</td><td class="hl-green">1 ciclo</td></tr>
+          <tr><td>LDR (memory)</td><td>2 ciclos</td></tr>
+          <tr><td>MUL</td><td>1–3 ciclos</td></tr>
+          <tr><td>LDM de N registros</td><td>N+1 ciclos</td></tr>
+          <tr><td>Branch tomado</td><td>3–4 ciclos penalty</td></tr>
+          <tr><td>Tail-chain ISR</td><td class="hl-green">6 ciclos (vs 12 normal)</td></tr>
+        </table>
+
+        <div class="note-box">CPI_real = 1 + stalls. Speedup = N etapas (teórico). Compilador reordena instrucciones para minimizar RAW.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Instrucciones clave -->
+  <div class="card">
+    <div class="card-title"><span class="dot dot-teal"></span> Instrucciones ARM Clave <span class="tag tag-core">core</span></div>
+
+    <h4>Datos</h4>
+    <div class="code-block"><span class="reg">MOV</span> R0, <span class="num">#42</span>         <span class="cmt">; inmediato</span>
+<span class="reg">LDR</span> R0, [R1]         <span class="cmt">; load de memoria</span>
+<span class="reg">STR</span> R0, [R1]         <span class="cmt">; store a memoria</span>
+<span class="reg">LDM</span> R1, {R2-R5}     <span class="cmt">; load multiple</span>
+<span class="reg">STM</span> R1, {R2-R5}     <span class="cmt">; store multiple</span></div>
+
+    <h4>Aritmética / Shifts</h4>
+    <div class="code-block"><span class="reg">ADD</span> / <span class="reg">SUB</span> / <span class="reg">MUL</span> / <span class="reg">UDIV</span>
+<span class="reg">LSL</span> <span class="num">#n</span>   <span class="cmt">; × 2ⁿ  (rellena 0 a la derecha)</span>
+<span class="reg">LSR</span> <span class="num">#n</span>   <span class="cmt">; ÷ 2ⁿ  (rellena 0, lógico)</span>
+<span class="reg">ASR</span> <span class="num">#n</span>   <span class="cmt">; ÷ 2ⁿ  (rellena signo, signed)</span></div>
+
+    <h4>Lógica Bitwise</h4>
+    <div class="code-block"><span class="reg">AND</span>  <span class="cmt">; mask / clear bits</span>
+<span class="reg">ORR</span>  <span class="cmt">; set bits</span>
+<span class="reg">EOR</span>  <span class="cmt">; XOR — toggle bits</span>
+<span class="reg">BIC</span>  <span class="cmt">; Bit Clear = AND NOT</span>
+<span class="cmt">; BIC R0, R0, #(1&lt;&lt;3) → clr bit 3</span></div>
+
+    <h4>Comparación (solo flags)</h4>
+    <div class="code-block"><span class="reg">CMP</span> R0, R1     <span class="cmt">; R0-R1 → N,Z,C,V</span>
+<span class="reg">TST</span> R0, <span class="num">#mask</span>  <span class="cmt">; AND → Z=1 si bits=0</span></div>
+
+    <h4>Saltos / Funciones</h4>
+    <div class="code-block"><span class="reg">B</span>   label        <span class="cmt">; branch incondicional</span>
+<span class="reg">BL</span>  func          <span class="cmt">; LR=PC+4, salta (call)</span>
+<span class="reg">BX</span>  LR            <span class="cmt">; return de función</span>
+<span class="reg">BEQ</span> / <span class="reg">BNE</span> / <span class="reg">BLT</span> / <span class="reg">BGT</span></div>
+  </div>
+</div>
+
+<!-- ROW 3: Caché -->
+<div class="section-divider"><span>Jerarquía de Memoria & Caché</span></div>
+<div class="grid">
+
+  <!-- Jerarquía de memoria -->
+  <div class="card">
+    <div class="card-title"><span class="dot dot-yellow"></span> Jerarquía de Memoria <span class="tag tag-int">entrevista</span></div>
+
+    <table>
+      <tr><th>Nivel</th><th>Latencia</th><th>Tamaño</th></tr>
+      <tr><td>Registros</td><td class="hl-green">0 ciclos</td><td>16 × 32b</td></tr>
+      <tr><td>L1 cache</td><td class="hl-green">1–4 ciclos</td><td>4–64 KB</td></tr>
+      <tr><td>L2 cache</td><td>10–20 ciclos</td><td>256 KB–4 MB</td></tr>
+      <tr><td>DRAM</td><td class="hl-red">60–100 ns</td><td>GBs</td></tr>
+      <tr><td>Flash (MCU)</td><td class="hl-red">~60 ns</td><td>512 KB–4 MB</td></tr>
+      <tr><td>SSD</td><td class="hl-red">~100 µs</td><td>GBs–TBs</td></tr>
+    </table>
+
+    <h4>En STM32F4 (Cortex-M4)</h4>
+    <div class="ok-box">ART Accelerator = prefetch buffer para instrucciones. Sin cache de datos. SRAM: 0 wait states.</div>
+
+    <h4>En STM32H7 (Cortex-M7)</h4>
+    <div class="note-box">L1 cache de instrucciones Y datos (típicamente 16–32 KB c/u). Write-back cache → problema con DMA.</div>
+
+    <h4>Localidad de Referencia</h4>
+    <div class="row"><span class="row-label">Temporal:</span><span class="row-val">accediste a X → pronto lo accedés de nuevo (loops)</span></div>
+    <div class="row"><span class="row-label">Espacial:</span><span class="row-val">accediste a X → pronto accedés X±n (arrays, código)</span></div>
+
+    <div class="warn-box">⚠ Recorrido column-major en C = cache thrashing. Usar row-major: <code>A[i][j]</code> con el índice j variando rápido.</div>
+  </div>
+
+  <!-- Cache organización + cálculo -->
+  <div class="card">
+    <div class="card-title"><span class="dot dot-blue"></span> Organización de Caché <span class="tag tag-calc">cálculo</span><span class="tag tag-int">entrevista</span></div>
+
+    <h4>Campos de la dirección</h4>
+    <code class="formula">Dirección: [ Tag | Index | Offset ]</code>
+    <table style="margin-top:4px">
+      <tr><td><span class="hl-green">Offset</span></td><td><code>log₂(bytes por línea)</code> bits</td></tr>
+      <tr><td><span class="hl-yellow">Index</span></td><td><code>log₂(capacidad / vías / tamaño_línea)</code> bits</td></tr>
+      <tr><td><span class="hl-red">Tag</span></td><td>32 - Index_bits - Offset_bits</td></tr>
+    </table>
+
+    <h4>Ejemplo de Cálculo ⭐</h4>
+    <div class="code-block"><span class="cmt">; Cache: 4 KB, líneas 32 bytes, direct-mapped</span>
+Offset  = log₂(<span class="num">32</span>)    = <span class="hl-green">5 bits</span>  → [4:0]
+Sets    = 4096 / 32 = <span class="num">128</span>
+Index   = log₂(<span class="num">128</span>)   = <span class="hl-yellow">7 bits</span>  → [11:5]
+Tag     = 32 - 7 - 5 = <span class="hl-red">20 bits</span> → [31:12]
+
+<span class="cmt">; ¿Cuántas vías tiene esta cache?</span>
+<span class="cmt">; direct-mapped = 1-way (1 línea por set)</span>
+<span class="cmt">; Si fuera 2-way: sets = 4096 / (32 × 2) = 64</span>
+<span class="cmt">;                index = log₂(64) = 6 bits</span></div>
+
+    <h4>3 Tipos de Miss</h4>
+    <table>
+      <tr><td>Compulsory</td><td>Primera vez — inevitable</td></tr>
+      <tr><td>Capacity</td><td>Working set &gt; cache size</td></tr>
+      <tr><td>Conflict</td><td>Thrashing direct-mapped — evitable con más vías</td></tr>
+    </table>
+
+    <h4>Políticas de Reemplazo</h4>
+    <div style="display:flex; flex-wrap:wrap; gap:3px; margin-top:3px">
+      <span class="pill pill-green">LRU — óptimo práctico</span>
+      <span class="pill pill-blue">Pseudo-LRU — CPUs reales</span>
+      <span class="pill pill-yellow">FIFO — más simple</span>
+      <span class="pill pill-teal">Random — sorprendentemente bueno</span>
+    </div>
+  </div>
+
+  <!-- Write policies + coherencia -->
+  <div class="card">
+    <div class="card-title"><span class="dot dot-red"></span> Write Policies & DMA Coherency <span class="tag tag-trap">trampa</span><span class="tag tag-fw">firmware</span></div>
+
+    <table>
+      <tr><th>Política</th><th>En hit</th><th>Overhead</th></tr>
+      <tr><td>Write-through</td><td>Cache + mem</td><td>Más tráfico de bus</td></tr>
+      <tr><td>Write-back</td><td>Solo cache</td><td>Flush en eviction</td></tr>
+      <tr><td>Write-allocate</td><td>—</td><td>Miss → trae línea a cache</td></tr>
+      <tr><td>No-write-alloc</td><td>—</td><td>Miss → escribe directo a mem</td></tr>
+    </table>
+
+    <h4>El Problema DMA + Write-Back <span class="tag tag-trap">trampa</span></h4>
+    <div class="code-block"><span class="cmt">// STM32H7 (Cortex-M7) — cache habilitada</span>
+<span class="cmt">// 1. CPU escribe buffer → va a L1 cache (no a SRAM aún)</span>
+<span class="kw">memcpy</span>(tx_buf, data, len);
+
+<span class="cmt">// 2. ❌ ERROR: DMA lee de SRAM → dato VIEJO</span>
+<span class="fn">HAL_UART_Transmit_DMA</span>(&amp;huart1, tx_buf, len);
+
+<span class="cmt">// ✓ CORRECCIÓN: flush cache antes del DMA</span>
+<span class="fn">SCB_CleanDCache_by_Addr</span>((<span class="kw">uint32_t</span>*)tx_buf, len);
+<span class="fn">HAL_UART_Transmit_DMA</span>(&amp;huart1, tx_buf, len);</div>
+
+    <div class="warn-box">⚠ STM32F4 (Cortex-M4): sin data cache → no hay problema de coherencia DMA. STM32H7 (Cortex-M7): SÍ tiene → flush obligatorio.</div>
+
+    <h4>MESI — Coherencia Multicore</h4>
+    <table>
+      <tr><td><span class="hl-red">M</span>odified</td><td>Solo en este core, dirty</td></tr>
+      <tr><td><span class="hl-green">E</span>xclusive</td><td>Solo en este core, igual a mem</td></tr>
+      <tr><td><span class="hl-blue">S</span>hared</td><td>Múltiples cores, igual a mem</td></tr>
+      <tr><td><span class="hl-purple">I</span>nvalid</td><td>No válida — próximo acceso = miss</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ROW 4: Privilegios + Vector Table + Boot -->
+<div class="section-divider"><span>Modos de Privilegio, Excepciones & Boot</span></div>
+<div class="grid">
+
+  <!-- Privilege modes -->
+  <div class="card">
+    <div class="card-title"><span class="dot dot-purple"></span> Privilege Levels & MPU <span class="tag tag-avio">aviónica</span><span class="tag tag-core">core</span></div>
+
+    <div style="background:var(--bg3); border-radius:6px; padding:8px; margin-bottom:6px; font-size:11px; font-family:monospace;">
+      <div style="background:#2d1a1a; border-radius:4px; padding:4px 8px; margin-bottom:4px; color:var(--red)">
+        <b>Handler Mode</b> — SIEMPRE privilegiado | MSP | ISRs, HardFault
+      </div>
+      <div style="border:1px solid var(--border); border-radius:4px; padding:6px 8px;">
+        <div style="color:var(--muted); font-size:10px; margin-bottom:4px">THREAD MODE</div>
+        <div style="background:#1a3060; border-radius:3px; padding:3px 8px; margin-bottom:3px; color:var(--blue)">
+          Privilegiado — CONTROL[0]=0 | MSP | OS kernel
+        </div>
+        <div style="background:#1a2e35; border-radius:3px; padding:3px 8px; color:var(--teal)">
+          Unprivileged — CONTROL[0]=1 | PSP | RTOS tasks
+        </div>
+      </div>
+    </div>
+
+    <div class="row"><span class="row-label">IRQ/fault:</span><span class="row-val">Thread → Handler mode</span></div>
+    <div class="row"><span class="row-label">EXC_RETURN:</span><span class="row-val">Handler → Thread mode</span></div>
+    <div class="row"><span class="row-label">SVC:</span><span class="row-val">Unpriv → Priv (única forma segura)</span></div>
+
+    <h4>EXC_RETURN (LR en ISR)</h4>
+    <table>
+      <tr><td><code>0xFFFFFFF9</code></td><td>Thread + MSP + no FPU</td></tr>
+      <tr><td><code>0xFFFFFFFD</code></td><td>Thread + PSP + no FPU</td></tr>
+      <tr><td><code>0xFFFFFFE9</code></td><td>Thread + MSP + FPU state</td></tr>
+    </table>
+
+    <h4>MPU — Memory Protection Unit <span class="tag tag-avio">DO-178C</span></h4>
+    <div class="row"><span class="row-label">Regiones:</span><span class="row-val">hasta 8 (16 en M33+)</span></div>
+    <div class="row"><span class="row-label">Permisos:</span><span class="row-val">R/W/X por región, priv vs unpriv</span></div>
+    <div class="row"><span class="row-label">Violación:</span><span class="row-val">→ MemManage Fault → OS mata la tarea</span></div>
+    <div class="ok-box">DO-178C: MPU obligatoria para partición espacial. Una tarea corrupta no puede afectar otras.</div>
+  </div>
+
+  <!-- Vector Table -->
+  <div class="card">
+    <div class="card-title"><span class="dot dot-orange"></span> Vector Table (Flash 0x0000) <span class="tag tag-int">entrevista</span></div>
+
+    <div class="mem-row"><span class="mem-addr">0x0000</span><div class="mem-entry" style="background:#1a2d1a; color:var(--green)">MSP inicial = top of SRAM</div></div>
+    <div class="mem-row"><span class="mem-addr">0x0004</span><div class="mem-entry" style="background:#2d1a1a; color:var(--red)">Reset_Handler ← entry point</div></div>
+    <div class="mem-row"><span class="mem-addr">0x0008</span><div class="mem-entry" style="background:#1a2235; color:var(--blue)">NMI_Handler</div></div>
+    <div class="mem-row"><span class="mem-addr">0x000C</span><div class="mem-entry" style="background:#3a2010; color:var(--orange)">HardFault_Handler</div></div>
+    <div class="mem-row"><span class="mem-addr">0x0010</span><div class="mem-entry" style="background:#2a1a4a; color:var(--purple)">MemManage_Handler ← MPU violation</div></div>
+    <div class="mem-row"><span class="mem-addr">0x0014</span><div class="mem-entry" style="background:#3a2a0a; color:var(--yellow)">BusFault_Handler</div></div>
+    <div class="mem-row"><span class="mem-addr">0x0018</span><div class="mem-entry" style="background:#1a2e2a; color:var(--teal)">UsageFault_Handler</div></div>
+    <div class="mem-row"><span class="mem-addr">0x002C</span><div class="mem-entry" style="background:#1a3a1f; color:var(--green)">SVC_Handler ← escalada privilegio</div></div>
+    <div class="mem-row"><span class="mem-addr">0x0038</span><div class="mem-entry" style="background:#2a1a4a; color:var(--purple)">PendSV_Handler ← context switch RTOS</div></div>
+    <div class="mem-row"><span class="mem-addr">0x003C</span><div class="mem-entry" style="background:#1a2235; color:var(--blue)">SysTick_Handler ← 1 ms tick FreeRTOS</div></div>
+    <div class="mem-row"><span class="mem-addr">0x0040+</span><div class="mem-entry" style="background:#21262d; color:var(--muted)">IRQ0–IRQ239 = periféricos (UART, SPI, CAN...)</div></div>
+
+    <div class="note-box">Al debuggear un HardFault: leer el stack frame, ver LR = EXC_RETURN, extraer PC del stack → dirección de la instrucción culpable.</div>
+  </div>
+
+  <!-- Boot Sequence + Buses -->
+  <div class="card">
+    <div class="card-title"><span class="dot dot-cyan"></span> Boot Sequence & Buses <span class="tag tag-fw">firmware</span></div>
+
+    <h4>Boot Sequence del Cortex-M</h4>
+    <div class="code-block"><span class="cmt">; 1. HW lee [0x00000000] → MSP inicial</span>
+<span class="cmt">; 2. HW lee [0x00000004] → salta a Reset_Handler</span>
+<span class="fn">Reset_Handler:</span>
+    <span class="reg">BL</span> <span class="fn">__copy_data</span>   <span class="cmt">; .data: Flash → SRAM</span>
+    <span class="reg">BL</span> <span class="fn">__zero_bss</span>    <span class="cmt">; .bss  → ceros</span>
+    <span class="reg">BL</span> <span class="fn">SystemInit</span>    <span class="cmt">; PLL, clocks</span>
+    <span class="reg">BL</span> <span class="fn">main</span>          <span class="cmt">; tu código</span>
+    <span class="reg">B</span>  .              <span class="cmt">; loop si main retorna</span></div>
+
+    <h4>Jerarquía de Buses STM32F4</h4>
+    <table>
+      <tr><th>Bus</th><th>Velocidad</th><th>Periféricos</th></tr>
+      <tr><td>AHB</td><td class="hl-green">≤ 168 MHz</td><td>Flash, SRAM, DMA</td></tr>
+      <tr><td>APB2</td><td>≤ 84 MHz</td><td>TIM1/8, ADC, SPI1</td></tr>
+      <tr><td>APB1</td><td>≤ 42 MHz</td><td>TIM2-7, I2C, CAN, SPI2/3</td></tr>
+    </table>
+
+    <div class="warn-box">⚠ Timer clock en APB1: si APBx prescaler > 1, timer clock = APBx × 2. APB1=42MHz → timer=84MHz.</div>
+
+    <h4>Memory-Mapped I/O</h4>
+    <div class="code-block"><span class="cmt">// ARM: todo es memory-mapped, no hay IN/OUT</span>
+<span class="kw">#define</span> GPIOA_ODR  (*((<span class="kw">volatile uint32_t</span> *)<span class="num">0x40020014</span>))
+GPIOA_ODR |= (<span class="num">1</span> &lt;&lt; <span class="num">5</span>);  <span class="cmt">// igual que acceder memoria</span>
+<span class="cmt">// volatile OBLIGATORIO — evita optimización del compilador</span></div>
+  </div>
+</div>
+
+<!-- ROW 5: Operaciones atómicas + Misunderstandings + Glosario -->
+<div class="section-divider"><span>Multicore, Trampas & Glosario</span></div>
+<div class="grid">
+
+  <!-- Atomicas + SMP -->
+  <div class="card">
+    <div class="card-title"><span class="dot dot-green"></span> Operaciones Atómicas & SMP <span class="tag tag-fw">firmware</span></div>
+
+    <h4>LDREX / STREX — Atomic sin deshabilitar IRQs</h4>
+    <div class="code-block"><span class="kw">uint32_t</span> old, new;
+<span class="kw">do</span> {
+    old = <span class="fn">__LDREXW</span>(&counter);   <span class="cmt">// Load exclusive</span>
+    new = old + <span class="num">1</span>;
+} <span class="kw">while</span> (<span class="fn">__STREXW</span>(new, &counter)); <span class="cmt">// falla si alguien escribió</span>
+
+<span class="cmt">// C11 — abstracción portable:</span>
+<span class="fn">atomic_fetch_add</span>(&counter, <span class="num">1</span>);</div>
+
+    <h4>MESI — Coherencia de Cache en Multicore</h4>
+    <table>
+      <tr><th>Estado</th><th>Ubicación</th><th>= Memoria?</th></tr>
+      <tr><td class="hl-red">Modified</td><td>Solo este core</td><td class="hl-red">No (dirty)</td></tr>
+      <tr><td class="hl-blue">Exclusive</td><td>Solo este core</td><td class="hl-green">Sí</td></tr>
+      <tr><td class="hl-green">Shared</td><td>Varios cores</td><td class="hl-green">Sí</td></tr>
+      <tr><td class="hl-purple">Invalid</td><td>—</td><td>—</td></tr>
+    </table>
+    <div class="note-box">Core escribe en línea Shared → broadcast invalidación → otros cores pasan a Invalid → próxima lectura = miss → fetch actualizado.</div>
+  </div>
+
+  <!-- Trampas comunes -->
+  <div class="card">
+    <div class="card-title"><span class="dot dot-red"></span> Trampas Comunes <span class="tag tag-trap">trampa</span></div>
+
+    <table>
+      <tr><th>Error común</th><th>Corrección</th></tr>
+      <tr>
+        <td>"PC apunta a instrucción actual"</td>
+        <td><span class="hl-green">PC = addr + 4</span> en Cortex-M (3 etapas)</td>
+      </tr>
+      <tr>
+        <td>"Bit 0 del PC no importa"</td>
+        <td>Bit 0 = 1 siempre (Thumb). Branch a par → <span class="hl-red">HardFault</span></td>
+      </tr>
+      <tr>
+        <td>"Write-back siempre es mejor"</td>
+        <td>Con DMA: <span class="hl-red">incoherencia</span>. Flush antes del DMA.</td>
+      </tr>
+      <tr>
+        <td>"Direct-mapped es más rápido"</td>
+        <td>Thrashing → miss rate 100%. <span class="hl-green">Set-assoc</span> balancea mejor.</td>
+      </tr>
+      <tr>
+        <td>"Cortex-M4 tiene 5 etapas"</td>
+        <td>M3/M4 tiene <span class="hl-green">3 etapas</span>. 5 etapas es el concepto clásico.</td>
+      </tr>
+      <tr>
+        <td>"Cortex-M4 tiene data cache"</td>
+        <td>STM32F4 (M4): <span class="hl-red">NO</span>. STM32H7 (M7): <span class="hl-green">SÍ</span>.</td>
+      </tr>
+      <tr>
+        <td>"LDR no causa hazards"</td>
+        <td>Load-use hazard = <span class="hl-red">1 stall inevitable</span>. Dato en MEM no en EX.</td>
+      </tr>
+      <tr>
+        <td>"R13 siempre es el mismo stack"</td>
+        <td>MSP (OS/IRQ) vs PSP (cada tarea). CONTROL[0] selecciona.</td>
+      </tr>
+      <tr>
+        <td>"Timer APB1 = 42 MHz"</td>
+        <td>Si prescaler APB1 > 1: <span class="hl-red">timer = APB1 × 2</span> = 84 MHz.</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Glosario -->
+  <div class="card">
+    <div class="card-title"><span class="dot dot-blue"></span> Glosario Rápido <span class="tag tag-core">core</span></div>
+
+    <table>
+      <tr><th>Acrónimo</th><th>Significado</th></tr>
+      <tr><td><code>ISA</code></td><td>Instruction Set Architecture</td></tr>
+      <tr><td><code>RISC/CISC</code></td><td>Reduced/Complex Instruction Set</td></tr>
+      <tr><td><code>AAPCS</code></td><td>ARM calling convention</td></tr>
+      <tr><td><code>RAW</code></td><td>Read After Write (data hazard)</td></tr>
+      <tr><td><code>CPI</code></td><td>Cycles Per Instruction</td></tr>
+      <tr><td><code>IPC</code></td><td>Instructions Per Cycle (inverso)</td></tr>
+      <tr><td><code>LRU</code></td><td>Least Recently Used (reemplazo)</td></tr>
+      <tr><td><code>MESI</code></td><td>Modified/Exclusive/Shared/Invalid</td></tr>
+      <tr><td><code>MPU</code></td><td>Memory Protection Unit</td></tr>
+      <tr><td><code>SVC</code></td><td>Supervisor Call (escalar privilegio)</td></tr>
+      <tr><td><code>PendSV</code></td><td>Context switch en RTOS</td></tr>
+      <tr><td><code>NMI</code></td><td>Non-Maskable Interrupt</td></tr>
+      <tr><td><code>AHB</code></td><td>Advanced High-perf Bus (rápido)</td></tr>
+      <tr><td><code>APB</code></td><td>Advanced Peripheral Bus (lento)</td></tr>
+      <tr><td><code>EXC_RETURN</code></td><td>Valor especial de LR en ISR</td></tr>
+      <tr><td><code>ART</code></td><td>Adaptive Real-Time (STM32 I-cache)</td></tr>
+      <tr><td><code>SMP</code></td><td>Symmetric MultiProcessing</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ROW 6: Fórmulas y Relevancia para el puesto -->
+<div class="section-divider"><span>Fórmulas & Relevancia para el Puesto</span></div>
+<div class="grid">
+
+  <div class="card">
+    <div class="card-title"><span class="dot dot-yellow"></span> Fórmulas Clave <span class="tag tag-calc">cálculo</span></div>
+
+    <h4>Campos de dirección de cache</h4>
+    <code class="formula">Offset_bits = log₂(bytes_por_línea)</code>
+    <code class="formula">Index_bits  = log₂(capacidad / (vías × bytes_línea))</code>
+    <code class="formula">Tag_bits    = 32 − Index_bits − Offset_bits</code>
+
+    <h4>Capacidad y throughput</h4>
+    <code class="formula">Capacidad_cache = sets × vías × bytes_línea</code>
+    <code class="formula">CPI_real = 1 + stalls_promedio_por_instrucción</code>
+    <code class="formula">Speedup_pipeline = CPI_sin_pipe / CPI_con_pipe</code>
+
+    <h4>Bus y timers</h4>
+    <code class="formula">f_timer = f_APBx × (prescaler_APBx > 1 ? 2 : 1)</code>
+    <code class="formula">f_sysclk = (HSE / M) × N / P   [PLL fórmula STM32]</code>
+  </div>
+
+  <div class="card span2">
+    <div class="card-title"><span class="dot dot-teal"></span> Relevancia para el Puesto — Aeronautical SW / Joby <span class="tag tag-avio">aviónica</span></div>
+    <div class="three-col" style="font-size:11px;">
+      <div>
+        <div class="pill pill-blue" style="margin-bottom:4px;display:block">Modified Harvard</div>
+        DMA transfiere por System bus mientras core ejecuta por I-Code bus — paralelo, sin espera.
+        <br><br>
+        <div class="pill pill-purple" style="margin-bottom:4px;display:block">ARM Thumb-2 + AAPCS</div>
+        Leerás ensamblador al debuggear con GDB/JTAG. AAPCS te dice qué registros mirar para args y return values.
+      </div>
+      <div>
+        <div class="pill pill-orange" style="margin-bottom:4px;display:block">Pipeline hazards</div>
+        El compilador los evita, pero si escribís ASM crítico o analizás disassembly, necesitás reconocer load-use stalls.
+        <br><br>
+        <div class="pill pill-red" style="margin-bottom:4px;display:block">Cache + DMA coherency</div>
+        Bug sutil en STM32H7: solo aparece en hardware, no en simulación. Flush es obligatorio antes de DMA con write-back cache.
+      </div>
+      <div>
+        <div class="pill pill-teal" style="margin-bottom:4px;display:block">Privilege + MPU</div>
+        DO-178C requiere partición espacial. Configurarás la MPU en el RTOS de producción para aislar tareas críticas.
+        <br><br>
+        <div class="pill pill-green" style="margin-bottom:4px;display:block">Vector table + Boot</div>
+        Al debuggear un HardFault, la vector table te dice qué handler saltó. El linker script + startup code son los primeros archivos que editarás en un proyecto nuevo.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center; color:var(--muted); font-size:10px; margin-top:14px; padding-top:8px; border-top:1px solid var(--border)">
+  Módulo 4 — Arquitectura de Computadores | Aeronautical SW / Joby Aviation Prep | Mayo 2026
+</div>
+
+</body>
+</html>

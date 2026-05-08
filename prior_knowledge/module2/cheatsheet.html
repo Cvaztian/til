@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cheat Sheet — Módulo 2: Circuitos Analógicos Esenciales</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;600;700;800&display=swap');
+
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #1c2333;
+    --bg4: #252d3a;
+    --text: #e6edf3;
+    --text2: #8b949e;
+    --text3: #6e7681;
+    --accent-blue: #58a6ff;
+    --accent-cyan: #39d9d9;
+    --accent-green: #3fb950;
+    --accent-lime: #a8e66c;
+    --accent-yellow: #d29922;
+    --accent-orange: #db6d28;
+    --accent-red: #f85149;
+    --accent-pink: #db61a2;
+    --accent-purple: #a78bfa;
+    --border: #30363d;
+    --glow-blue: rgba(88,166,255,0.12);
+    --glow-green: rgba(63,185,80,0.12);
+    --glow-red: rgba(248,81,73,0.12);
+    --glow-yellow: rgba(210,153,34,0.12);
+    --glow-purple: rgba(167,139,250,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    padding: 2rem;
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  /* ─── Header ─── */
+  .header {
+    text-align: center;
+    padding: 2.5rem 2rem;
+    margin-bottom: 2rem;
+    background: linear-gradient(135deg, #0d1117 0%, #1a1e2e 50%, #0d1117 100%);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan), var(--accent-green), var(--accent-yellow), var(--accent-orange));
+  }
+  .header h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .header p { color: var(--text2); margin-top: 0.4rem; font-size: 0.95rem; }
+
+  /* ─── Tags ─── */
+  .tag {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 2px 8px;
+    border-radius: 4px;
+    vertical-align: middle;
+    margin-left: 6px;
+  }
+  .tag-interview { background: var(--accent-orange); color: #000; }
+  .tag-core { background: var(--accent-blue); color: #000; }
+  .tag-trap { background: var(--accent-red); color: #fff; }
+  .tag-avionics { background: var(--accent-purple); color: #000; }
+  .tag-firmware { background: var(--accent-green); color: #000; }
+
+  /* ─── Sections ─── */
+  .section {
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .section-header .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: rgba(255,255,255,0.08);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .section-body { padding: 1rem 1.5rem; }
+
+  .s-semi .section-header { background: linear-gradient(90deg, rgba(57,217,217,0.12), transparent); border-bottom: 1px solid rgba(57,217,217,0.2); color: var(--accent-cyan); }
+  .s-opamp .section-header { background: linear-gradient(90deg, rgba(167,139,250,0.12), transparent); border-bottom: 1px solid rgba(167,139,250,0.2); color: var(--accent-purple); }
+  .s-adc .section-header { background: linear-gradient(90deg, rgba(63,185,80,0.12), transparent); border-bottom: 1px solid rgba(63,185,80,0.2); color: var(--accent-green); }
+  .s-reg .section-header { background: linear-gradient(90deg, rgba(210,153,34,0.12), transparent); border-bottom: 1px solid rgba(210,153,34,0.2); color: var(--accent-yellow); }
+  .s-noise .section-header { background: linear-gradient(90deg, rgba(248,81,73,0.12), transparent); border-bottom: 1px solid rgba(248,81,73,0.2); color: var(--accent-red); }
+
+  /* ─── Cards ─── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1rem;
+    margin-top: 0.8rem;
+  }
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+  }
+  .card h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  /* ─── Formula boxes ─── */
+  .formula {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88rem;
+    background: var(--bg3);
+    border-left: 3px solid var(--accent-blue);
+    padding: 0.5rem 0.8rem;
+    border-radius: 0 6px 6px 0;
+    margin: 0.5rem 0;
+    line-height: 1.8;
+    overflow-x: auto;
+  }
+  .formula.green { border-left-color: var(--accent-green); }
+  .formula.yellow { border-left-color: var(--accent-yellow); }
+  .formula.cyan { border-left-color: var(--accent-cyan); }
+  .formula.purple { border-left-color: var(--accent-purple); }
+  .formula.red { border-left-color: var(--accent-red); }
+
+  .formula .hl { color: var(--accent-cyan); font-weight: 600; }
+  .formula .hlg { color: var(--accent-green); font-weight: 600; }
+  .formula .hly { color: var(--accent-yellow); font-weight: 600; }
+  .formula .hlr { color: var(--accent-red); font-weight: 600; }
+  .formula .hlp { color: var(--accent-purple); font-weight: 600; }
+
+  /* ─── Tables ─── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    margin: 0.5rem 0;
+  }
+  th {
+    text-align: left;
+    padding: 6px 10px;
+    background: var(--bg3);
+    color: var(--text2);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 5px 10px;
+    border-bottom: 1px solid rgba(48,54,61,0.5);
+    color: var(--text);
+  }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* ─── Warning / Tip / Trap boxes ─── */
+  .box {
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    margin: 0.6rem 0;
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+  .box-warn {
+    background: var(--glow-red);
+    border: 1px solid rgba(248,81,73,0.3);
+  }
+  .box-warn::before { content: '⚠ '; color: var(--accent-red); font-weight: 700; }
+  .box-tip {
+    background: var(--glow-green);
+    border: 1px solid rgba(63,185,80,0.3);
+  }
+  .box-tip::before { content: '💡 '; }
+  .box-trap {
+    background: var(--glow-yellow);
+    border: 1px solid rgba(210,153,34,0.3);
+  }
+  .box-trap::before { content: '🪤 TRAMPA: '; color: var(--accent-yellow); font-weight: 700; }
+  .box-key {
+    background: var(--glow-blue);
+    border: 1px solid rgba(88,166,255,0.3);
+  }
+  .box-key::before { content: '🔑 '; }
+  .box-avio {
+    background: var(--glow-purple);
+    border: 1px solid rgba(167,139,250,0.3);
+  }
+  .box-avio::before { content: '✈ AVIÓNICA: '; color: var(--accent-purple); font-weight: 700; }
+
+  /* ─── Compact lists ─── */
+  .compact-list { list-style: none; padding: 0; }
+  .compact-list li {
+    padding: 3px 0 3px 16px;
+    position: relative;
+    font-size: 0.85rem;
+    color: var(--text);
+  }
+  .compact-list li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--text3);
+    font-weight: 700;
+  }
+
+  /* ─── Code ─── */
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    background: var(--bg3);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--accent-lime);
+  }
+  pre {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: var(--accent-lime);
+    margin: 0.5rem 0;
+  }
+
+  /* ─── Subsection dividers ─── */
+  .sub-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+    margin: 1rem 0 0.5rem;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ─── Two-column layout on wide screens ─── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  @media (max-width: 700px) {
+    .two-col { grid-template-columns: 1fr; }
+    .card-grid { grid-template-columns: 1fr; }
+    body { padding: 1rem; }
+    .header h1 { font-size: 1.4rem; }
+  }
+
+  .small { font-size: 0.78rem; color: var(--text2); }
+  .accent-text { color: var(--accent-cyan); font-weight: 600; }
+  strong { font-weight: 600; }
+
+  /* ─── Footer ─── */
+  .footer {
+    text-align: center;
+    padding: 1.5rem;
+    color: var(--text3);
+    font-size: 0.8rem;
+    border-top: 1px solid var(--border);
+    margin-top: 2rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- HEADER -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="header">
+  <h1>Módulo 2 — Circuitos Analógicos Esenciales</h1>
+  <p>Cheat Sheet · Embedded Software Engineer · Aeronautical SW / Joby Aviation</p>
+  <p class="small" style="margin-top:0.8rem;">
+    <span class="tag tag-interview">Entrevista</span>
+    <span class="tag tag-core">Core</span>
+    <span class="tag tag-trap">Trampa</span>
+    <span class="tag tag-avionics">Aviónica</span>
+    <span class="tag tag-firmware">Firmware</span>
+  </p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- 2.1 SEMICONDUCTORES -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="section s-semi">
+  <div class="section-header"><span class="num">2.1</span> Semiconductores Fundamentales</div>
+  <div class="section-body">
+
+    <!-- Diodos -->
+    <div class="sub-title">Diodos <span class="tag tag-core">Core</span></div>
+    <div class="two-col">
+      <div>
+        <table>
+          <tr><th>Tipo</th><th>V_f</th><th>Uso</th></tr>
+          <tr><td>Rectificador (Si)</td><td>~0.7V</td><td>AC→DC</td></tr>
+          <tr><td>Zener</td><td>V_BR diseñado</td><td>Regulación, clamping</td></tr>
+          <tr><td>Schottky</td><td>~0.2-0.3V</td><td>Switching, protección</td></tr>
+          <tr><td>LED</td><td>1.8-3.2V</td><td>Indicadores</td></tr>
+          <tr><td>ESD (interno)</td><td>~0.7V</td><td>Protección pines</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="formula cyan">
+          <span class="hl">R_LED</span> = (V_GPIO − V_f) / I_f<br>
+          Ej: (3.3 − 1.8) / 0.020 = <span class="hl">75Ω → 82Ω</span>
+        </div>
+        <div class="box box-tip">Diodo flyback: siempre en antiparalelo con cargas inductivas (relay, motor). Cátodo a VCC, ánodo a colector/drain.</div>
+      </div>
+    </div>
+
+    <div class="box box-trap">0.7V es solo para Si estándar. Schottky ≈ 0.3V, LED = 1.8-3.2V según color. Siempre verificar datasheet.</div>
+
+    <!-- BJT -->
+    <div class="sub-title">BJT como switch <span class="tag tag-interview">Entrevista</span></div>
+    <div class="two-col">
+      <div>
+        <table>
+          <tr><th>Terminal</th><th>Rol</th><th>Conexión</th></tr>
+          <tr><td><strong>Base (B)</strong></td><td>Control</td><td>GPIO vía R_B</td></tr>
+          <tr><td><strong>Colector (C)</strong></td><td>Entrada I grande</td><td>Carga</td></tr>
+          <tr><td><strong>Emisor (E)</strong></td><td>Salida a tierra</td><td>GND</td></tr>
+        </table>
+        <table style="margin-top:0.5rem">
+          <tr><th>Región</th><th>Estado</th><th>Uso</th></tr>
+          <tr><td>Corte</td><td>V_BE &lt; 0.7V</td><td>Switch OFF</td></tr>
+          <tr><td>Activa</td><td>I_C = β × I_B</td><td>Amplificador</td></tr>
+          <tr><td><strong>Saturación</strong></td><td>V_CE ≈ 0.2V</td><td><strong>Switch ON</strong></td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="formula cyan">
+          <span class="hl">I_B</span> = I_C / β_forzado<br>
+          <span class="hl">R_B</span> = (V_GPIO − 0.7V) / I_B<br>
+          <span class="hlr">β_forzado = 10</span> (no el β real)<br>
+          I_E = I_C + I_B (se suman en el emisor)
+        </div>
+        <div class="box box-warn">No diseñar con β del datasheet — varía con temperatura y entre unidades. Usar β_forzado = 10 garantiza saturación.</div>
+      </div>
+    </div>
+
+    <!-- MOSFET -->
+    <div class="sub-title">MOSFET como switch <span class="tag tag-interview">Entrevista</span> <span class="tag tag-core">Core</span></div>
+    <div class="two-col">
+      <div>
+        <table>
+          <tr><th>Terminal</th><th>Rol</th><th>Conexión</th></tr>
+          <tr><td><strong>Gate (G)</strong></td><td>Control (voltaje)</td><td>GPIO, I ≈ 0</td></tr>
+          <tr><td><strong>Drain (D)</strong></td><td>Entrada corriente</td><td>Carga</td></tr>
+          <tr><td><strong>Source (S)</strong></td><td>Salida a tierra</td><td>GND (N-ch)</td></tr>
+        </table>
+        <table style="margin-top:0.5rem">
+          <tr><th>Región</th><th>Estado</th><th>Uso</th></tr>
+          <tr><td>Corte</td><td>V_GS &lt; V_th</td><td>Switch OFF</td></tr>
+          <tr><td><strong>Lineal (triodo)</strong></td><td>R_DS(on)</td><td><strong>Switch ON</strong></td></tr>
+          <tr><td>Saturación</td><td>I constante</td><td>Amplificador</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="formula cyan">
+          <span class="hl">P_disipada</span> = I² × R_DS(on)<br>
+          <span class="hl">V_GS</span> = V_Gate − V_Source<br>
+          Logic-level MOSFET: V_th ≤ 1.5V
+        </div>
+        <div class="box box-trap"><strong>"Saturación" BJT vs MOSFET:</strong> BJT saturación = switch ON. MOSFET saturación = amplificador. MOSFET switch ON = región <em>lineal/triodo</em>. Nombres OPUESTOS.</div>
+      </div>
+    </div>
+
+    <!-- P-channel -->
+    <div class="box box-key"><strong>P-channel high-side:</strong> GPIO LOW = ON (V_GS negativo → conduce). GPIO HIGH = OFF (V_GS = 0). Lógica invertida. En firmware: <code>#define POWER_ON() GPIO_CLEAR(PIN)</code></div>
+
+    <!-- Carga en Drain -->
+    <div class="box box-tip"><strong>¿Por qué carga entre VCC y Drain?</strong> Si va entre Source y GND, V_Source sube → V_GS se reduce → feedback negativo → MOSFET no satura. Carga arriba mantiene Source = GND → V_GS máximo.</div>
+
+    <!-- BJT vs MOSFET -->
+    <div class="sub-title">BJT vs MOSFET <span class="tag tag-interview">Entrevista</span></div>
+    <table>
+      <tr><th>Aspecto</th><th>BJT</th><th>MOSFET</th></tr>
+      <tr><td>Control</td><td>Corriente (I_B)</td><td><strong>Voltaje (V_GS)</strong></td></tr>
+      <tr><td>Consumo driver</td><td>Continuo (mA)</td><td><strong>Solo switching</strong></td></tr>
+      <tr><td>Pérdida ON</td><td>V_CE(sat) × I</td><td><strong>I² × R_DS(on) (menor)</strong></td></tr>
+      <tr><td>Robustez</td><td><strong>Robusto</strong></td><td>Frágil (ESD en gate)</td></tr>
+      <tr><td>Uso actual</td><td>Legacy</td><td><strong>Dominante</strong></td></tr>
+    </table>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- 2.2 OP-AMPS -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="section s-opamp">
+  <div class="section-header"><span class="num">2.2</span> Amplificadores Operacionales</div>
+  <div class="section-body">
+
+    <div class="sub-title">Reglas de oro (con realimentación negativa) <span class="tag tag-interview">Entrevista</span></div>
+    <div class="formula purple">
+      <strong>Regla 1:</strong> <span class="hlp">V+ = V−</span> (diferencia = 0)<br>
+      <strong>Regla 2:</strong> <span class="hlp">I+ = I− = 0</span> (impedancia entrada infinita)
+    </div>
+    <div class="box box-warn">Solo aplican con realimentación NEGATIVA (salida → V−). Sin realimentación → satura a ±V_supply (comparador).</div>
+
+    <div class="sub-title">Configuraciones <span class="tag tag-core">Core</span></div>
+    <div class="card-grid">
+      <div class="card">
+        <h4>Inversor</h4>
+        <div class="formula purple">V_out = <span class="hlr">−</span>(R_f / R_in) × V_in<br>A_v = −R_f / R_in</div>
+        <p class="small">V+ a GND. Invierte señal 180°. R_f = feedback, R_in = input.</p>
+      </div>
+      <div class="card">
+        <h4>No-inversor</h4>
+        <div class="formula purple">V_out = (<span class="hlp">1</span> + R_f / R_in) × V_in<br>A_v = 1 + R_f / R_in</div>
+        <p class="small">V_in entra por V+ (no-inversora). Ganancia ≥ 1.</p>
+      </div>
+      <div class="card">
+        <h4>Buffer (follower) <span class="tag tag-firmware">Firmware</span></h4>
+        <div class="formula purple">V_out = V_in (ganancia = 1)<br>R_f = 0 (cable), R_in = ∞ (abierto)</div>
+        <p class="small">Desacopla impedancias. Sensor de alta Z → buffer → ADC. Uso diario en embedded.</p>
+      </div>
+      <div class="card">
+        <h4>Diferencial <span class="tag tag-avionics">Aviónica</span></h4>
+        <div class="formula purple">V_out = (R_f / R1) × (V2 − V1)</div>
+        <p class="small">Alto CMRR — rechaza ruido común. Medir corriente con shunt en eVTOL.</p>
+      </div>
+    </div>
+
+    <div class="sub-title">Filtro activo pasa-bajos <span class="tag tag-avionics">Aviónica</span></div>
+    <div class="formula purple">
+      <span class="hlp">f_c</span> = 1 / (2π × R_f × C)<br>
+      Ej: R_f=10kΩ, C=1µF → f_c = <span class="hlp">15.9 Hz</span>
+    </div>
+    <div class="box box-avio">Filtro anti-aliasing antes del ADC. Obligatorio en DO-178C.</div>
+
+    <div class="sub-title">Método de análisis (4 pasos) <span class="tag tag-interview">Entrevista</span></div>
+    <ul class="compact-list">
+      <li><strong>1.</strong> Verificar realimentación negativa (salida → V−)</li>
+      <li><strong>2.</strong> Aplicar V+ = V− (escribir voltaje conocido)</li>
+      <li><strong>3.</strong> Aplicar I = 0 → corriente por R_in = corriente por R_f</li>
+      <li><strong>4.</strong> Resolver para V_out</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- 2.3 ADC/DAC -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="section s-adc">
+  <div class="section-header"><span class="num">2.3</span> Conversión ADC/DAC ⭐</div>
+  <div class="section-body">
+
+    <div class="sub-title">Fórmulas maestras <span class="tag tag-interview">Entrevista</span> <span class="tag tag-core">Core</span></div>
+    <div class="formula green">
+      <span class="hlg">LSB</span> = V_ref / 2^N<br>
+      <span class="hlg">V</span> = código × LSB = código × (V_ref / 2^N)<br>
+      <span class="hlg">código</span> = V_in × 2^N / V_ref<br>
+      <span class="hlg">f_s ≥ 2 × f_max</span>  (Nyquist-Shannon)<br>
+      <span class="hlg">SNR_max</span> = 6.02 × N + 1.76 dB
+    </div>
+
+    <div class="sub-title">Resolución práctica (V_ref = 3.3V)</div>
+    <table>
+      <tr><th>Bits</th><th>Niveles</th><th>LSB</th><th>Uso</th></tr>
+      <tr><td>8</td><td>256</td><td>12.9 mV</td><td>Control simple</td></tr>
+      <tr><td>10</td><td>1,024</td><td>3.22 mV</td><td>Arduino</td></tr>
+      <tr><td style="color:var(--accent-green);font-weight:600">12</td><td>4,096</td><td>0.806 mV</td><td><strong>Cortex-M (estándar)</strong></td></tr>
+      <tr><td>16</td><td>65,536</td><td>50.3 µV</td><td>Instrumentación</td></tr>
+      <tr><td>24</td><td>16.7M</td><td>0.197 µV</td><td>Audio, termocuplas</td></tr>
+    </table>
+
+    <div class="box box-trap">Código máximo = 2^N − 1 → corresponde a V_ref − 1 LSB, NO a V_ref exacto.</div>
+    <div class="box box-trap">"Resolución" ≠ "Precisión". ENOB (bits efectivos) &lt; bits nominales por ruido.</div>
+
+    <div class="sub-title">Nyquist y Aliasing <span class="tag tag-interview">Entrevista</span></div>
+    <div class="two-col">
+      <div>
+        <div class="box box-key"><strong>Nyquist:</strong> f_s ≥ 2 × f_max. En práctica: 5-10× f_max.</div>
+        <div class="box box-warn"><strong>Aliasing:</strong> f_s &lt; 2×f_max → frecuencia fantasma. f_alias = |f_s − f_señal|. <strong>IRREVERSIBLE</strong> después del ADC.</div>
+      </div>
+      <div>
+        <div class="box box-key"><strong>Filtro anti-aliasing:</strong> Pasa-bajos analógico ANTES del ADC. Elimina frecuencias &gt; f_s/2.</div>
+        <div class="box box-trap">El filtro pasa-bajos filtra <strong>FRECUENCIAS</strong>, no voltajes. Señal de 3V a baja freq → pasa. Señal de 0.1V a alta freq → bloqueada.</div>
+      </div>
+    </div>
+
+    <div class="sub-title">Cadena de adquisición <span class="tag tag-avionics">Aviónica</span></div>
+    <div class="formula green">
+      Sensor → Buffer (op-amp) → <span class="hlr">Filtro anti-aliasing</span> → ADC → <span class="hlg">Tu código C</span>
+    </div>
+
+    <div class="sub-title">Tipos de ADC <span class="tag tag-interview">Entrevista</span></div>
+    <table>
+      <tr><th>Tipo</th><th>Bits</th><th>Velocidad</th><th>Cómo funciona</th><th>Pregunta de entrevista</th></tr>
+      <tr><td style="color:var(--accent-green);font-weight:600">SAR</td><td>8-18</td><td>10k-5M SPS</td><td>Búsqueda binaria (N pasos)</td><td>"¿Tu Cortex-M?" → <strong>SAR</strong></td></tr>
+      <tr><td style="color:var(--accent-purple)">Sigma-Delta</td><td>16-32</td><td>10-100k SPS</td><td>Oversampling + filtrado</td><td>"¿Termocupla µV?" → <strong>ΣΔ</strong></td></tr>
+      <tr><td style="color:var(--accent-orange)">Flash</td><td>4-8</td><td>100M-10G SPS</td><td>2^N−1 comparadores paralelos</td><td>"¿Osciloscopio?" → <strong>Flash</strong></td></tr>
+    </table>
+
+    <div class="sub-title">SAR — búsqueda binaria <span class="tag tag-core">Core</span></div>
+    <ul class="compact-list">
+      <li>Compara V_in con V_ref/2 → MSB = 1 o 0</li>
+      <li>Ajusta rango a la mitad, compara de nuevo → siguiente bit</li>
+      <li>Repite N veces. Cada paso = 1 bit. 12 bits = 12 comparaciones.</li>
+      <li>DAC interno genera voltajes de prueba, comparador decide</li>
+      <li>El código final = suma de fracciones que dieron "SÍ": bit_k vale V_ref/2^k</li>
+    </ul>
+
+    <div class="sub-title">DAC <span class="tag tag-firmware">Firmware</span></div>
+    <div class="formula green">
+      <strong>R-2R:</strong> V_out = código × (V_ref / 2^N)<br>
+      <strong>PWM como DAC:</strong> V_out = V_GPIO × <span class="hlg">duty_cycle</span> + filtro RC
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- 2.4 REGULADORES -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="section s-reg">
+  <div class="section-header"><span class="num">2.4</span> Reguladores de Voltaje y Fuentes</div>
+  <div class="section-body">
+
+    <div class="sub-title">LDO vs Switching <span class="tag tag-interview">Entrevista</span></div>
+    <div class="two-col">
+      <div class="card">
+        <h4 style="color:var(--accent-orange)">LDO (Lineal)</h4>
+        <div class="formula yellow">
+          <span class="hly">P_calor</span> = (V_in − V_out) × I_out<br>
+          <span class="hly">η</span> = V_out / V_in<br>
+          V_dropout típico: 100-300mV
+        </div>
+        <ul class="compact-list">
+          <li>✓ Salida ultra-limpia (bajo ruido)</li>
+          <li>✓ Simple, barato, sin EMI</li>
+          <li>✗ Ineficiente si V_in >> V_out</li>
+          <li>✗ Solo baja voltaje</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4 style="color:var(--accent-green)">Switching (Buck)</h4>
+        <div class="formula yellow">
+          <span class="hly">V_out</span> = D × V_in  (D = duty cycle)<br>
+          <span class="hly">η</span> ≈ 85-95%<br>
+          P_in = P_out / η
+        </div>
+        <ul class="compact-list">
+          <li>✓ Eficiente (85-95%)</li>
+          <li>✓ Puede subir Y bajar voltaje</li>
+          <li>✗ Ruido (ripple, EMI)</li>
+          <li>✗ Layout PCB crítico</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="box box-trap">"Switching siempre es mejor" → FALSO. Para ADC de precisión, el ruido del switching corrompe mediciones. Usar LDO después del switching para limpiar.</div>
+
+    <div class="sub-title">Eficiencia LDO — ejemplos</div>
+    <table>
+      <tr><th>Conversión</th><th>I_out</th><th>P_calor</th><th>η</th><th>Veredicto</th></tr>
+      <tr><td>5V → 3.3V</td><td>100mA</td><td>0.17W</td><td>66%</td><td>OK</td></tr>
+      <tr><td style="color:var(--accent-red)">12V → 3.3V</td><td>500mA</td><td style="color:var(--accent-red)">4.35W</td><td style="color:var(--accent-red)">27.5%</td><td>Usar switching</td></tr>
+      <tr><td style="color:var(--accent-green)">3.6V → 3.3V</td><td>200mA</td><td>0.06W</td><td style="color:var(--accent-green)">91.7%</td><td>Ideal para LDO</td></tr>
+    </table>
+
+    <div class="sub-title">Arquitectura aviónica <span class="tag tag-avionics">Aviónica</span></div>
+    <div class="formula yellow">
+      28V (bus) → <span class="hly">Buck</span> (28→5V) → <span class="hly">LDO</span> (5→3.3V limpio) → MCU + ADC
+    </div>
+    <p class="small">Buck para eficiencia, LDO para limpiar ruido. Lo mejor de ambos mundos.</p>
+
+    <div class="sub-title">Power Budget y Modos de bajo consumo <span class="tag tag-firmware">Firmware</span></div>
+    <table>
+      <tr><th>Modo MCU</th><th>Consumo típico</th><th>Qué funciona</th></tr>
+      <tr><td>Run</td><td>30-100mA</td><td>Todo activo</td></tr>
+      <tr><td>Sleep</td><td>5-15mA</td><td>CPU dormida, periféricos ON</td></tr>
+      <tr><td>Stop</td><td>10-100µA</td><td>Solo RTC + wakeup</td></tr>
+      <tr><td>Standby</td><td>1-5µA</td><td>Solo pin wakeup</td></tr>
+    </table>
+    <div class="box box-avio">Power budget es documento formal en DO-178C. Margen 20-50% obligatorio.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- 2.5 RUIDO / EMI -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="section s-noise">
+  <div class="section-header"><span class="num">2.5</span> Ruido e Integridad de Señal — EMI/EMC</div>
+  <div class="section-body">
+
+    <div class="sub-title">Definiciones clave <span class="tag tag-core">Core</span></div>
+    <div class="formula red">
+      <span class="hlr">SNR</span> = 20 × log₁₀(V_signal / V_noise) [dB]<br>
+      ADC N bits: SNR_max = 6.02N + 1.76 dB<br>
+      12 bits → ~74 dB máx. Si circuito tiene 40dB → últimos ~6 bits son ruido
+    </div>
+    <div class="two-col">
+      <div>
+        <ul class="compact-list">
+          <li><strong>EMI:</strong> Ruido que tu circuito <strong>genera</strong></li>
+          <li><strong>EMC:</strong> Funcionar bien <strong>en presencia de EMI</strong> y no generar EMI excesivo</li>
+          <li><strong>DO-160G:</strong> Estándar de tests EMC para aviación</li>
+        </ul>
+      </div>
+      <div>
+        <table>
+          <tr><th>SNR</th><th>Calidad</th></tr>
+          <tr><td>&gt; 60 dB</td><td style="color:var(--accent-green)">Excelente</td></tr>
+          <tr><td>40-60 dB</td><td style="color:var(--accent-yellow)">Aceptable</td></tr>
+          <tr><td>&lt; 20 dB</td><td style="color:var(--accent-red)">Pobre</td></tr>
+          <tr><td>0 dB</td><td style="color:var(--accent-red)">Señal = ruido, inútil</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="sub-title">4 mecanismos de acoplamiento <span class="tag tag-interview">Entrevista</span></div>
+    <table>
+      <tr><th>Mecanismo</th><th>Cómo</th><th>Ejemplo</th><th>Solución</th></tr>
+      <tr><td style="color:var(--accent-orange)"><strong>Conductivo</strong></td><td>Cables compartidos</td><td>Motor + ADC misma GND</td><td>Star ground</td></tr>
+      <tr><td style="color:var(--accent-purple)"><strong>Capacitivo</strong></td><td>Campo E (C parásita)</td><td>Clock junto a señal analógica</td><td>Separar trazas</td></tr>
+      <tr><td style="color:var(--accent-cyan)"><strong>Inductivo</strong></td><td>Campo B (Faraday)</td><td>Cable motor → cable sensor</td><td>Minimizar lazos</td></tr>
+      <tr><td style="color:var(--accent-red)"><strong>Radiado</strong></td><td>Ondas EM por aire</td><td>Inversor irradia, cable = antena</td><td>Blindaje, filtros</td></tr>
+    </table>
+
+    <div class="sub-title">Técnicas de mitigación <span class="tag tag-interview">Entrevista</span> <span class="tag tag-core">Core</span></div>
+    <div class="card-grid">
+      <div class="card">
+        <h4>Capacitor de desacoplo <span class="tag tag-interview">Entrevista</span></h4>
+        <ul class="compact-list">
+          <li><strong>100nF cerámico</strong> en cada pin VCC de cada IC. Sin excepciones.</li>
+          <li>10µF por rail de alimentación</li>
+          <li>Lo más <strong>cerca posible</strong> del pin (milímetros)</li>
+          <li>Reserva local de carga para transitorios</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>Ground plane</h4>
+        <ul class="compact-list">
+          <li>Capa entera de cobre = GND</li>
+          <li>Baja Z de retorno, blindaje entre capas</li>
+          <li style="color:var(--accent-red)"><strong>NO cortar el ground plane</strong></li>
+          <li>PCB 4 capas: Señales/GND/Power/Señales</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>Separación analógico-digital</h4>
+        <ul class="compact-list">
+          <li>Zonas físicamente separadas en PCB</li>
+          <li>AGND + DGND → <strong>un solo punto de unión</strong></li>
+          <li>Star ground bajo el ADC</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>Oversampling (firmware) <span class="tag tag-firmware">Firmware</span></h4>
+        <div class="formula red">
+          ruido_reducido = ruido / <span class="hlr">√N</span><br>
+          16 muestras → ruido/4 → +2 bits
+        </div>
+        <p class="small">NO reemplaza el filtro anti-aliasing analógico.</p>
+      </div>
+    </div>
+
+    <div class="sub-title">Cadena completa de protección</div>
+    <div class="formula red">
+      Blindaje → Filtro anti-alias → Desacoplo 100nF → GND plane → ADC → FW oversample
+    </div>
+    <div class="box box-avio">DO-160G define tests de EMI/EMC obligatorios. Tu equipo debe sobrevivir EMI externo Y no generar EMI excesivo.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- GLOSARIO DE ACRÓNIMOS Y NOMENCLATURA -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="section" style="border-color: var(--accent-pink);">
+  <div class="section-header" style="background:linear-gradient(90deg,rgba(219,97,162,0.12),transparent); border-bottom:1px solid rgba(219,97,162,0.2); color:var(--accent-pink);">
+    <span class="num">ABC</span> Glosario — Acrónimos, parámetros y nomenclatura
+  </div>
+  <div class="section-body">
+
+    <div class="sub-title">Acrónimos generales</div>
+    <div class="two-col">
+      <div>
+        <table>
+          <tr><th>Acrónimo</th><th>Significado</th></tr>
+          <tr><td><strong>ADC</strong></td><td>Analog-to-Digital Converter</td></tr>
+          <tr><td><strong>DAC</strong></td><td>Digital-to-Analog Converter</td></tr>
+          <tr><td><strong>SAR</strong></td><td>Successive Approximation Register (tipo de ADC)</td></tr>
+          <tr><td><strong>ΣΔ</strong></td><td>Sigma-Delta (tipo de ADC de alta resolución)</td></tr>
+          <tr><td><strong>SNR</strong></td><td>Signal-to-Noise Ratio (relación señal/ruido, en dB)</td></tr>
+          <tr><td><strong>ENOB</strong></td><td>Effective Number Of Bits (bits útiles reales del ADC)</td></tr>
+          <tr><td><strong>LSB</strong></td><td>Least Significant Bit (escalón mínimo de voltaje)</td></tr>
+          <tr><td><strong>MSB</strong></td><td>Most Significant Bit (bit de mayor peso)</td></tr>
+          <tr><td><strong>SPS</strong></td><td>Samples Per Second (tasa de muestreo)</td></tr>
+          <tr><td><strong>EMI</strong></td><td>Electromagnetic Interference (ruido que generas)</td></tr>
+          <tr><td><strong>EMC</strong></td><td>Electromagnetic Compatibility (funcionar con/sin EMI)</td></tr>
+          <tr><td><strong>CMRR</strong></td><td>Common Mode Rejection Ratio (rechazo de ruido común, op-amp)</td></tr>
+          <tr><td><strong>ESD</strong></td><td>Electrostatic Discharge (descarga electrostática)</td></tr>
+          <tr><td><strong>GBW</strong></td><td>Gain-Bandwidth Product (producto ganancia×ancho de banda, op-amp)</td></tr>
+        </table>
+      </div>
+      <div>
+        <table>
+          <tr><th>Acrónimo</th><th>Significado</th></tr>
+          <tr><td><strong>LDO</strong></td><td>Low Dropout Regulator (regulador lineal)</td></tr>
+          <tr><td><strong>PWM</strong></td><td>Pulse Width Modulation (modulación por ancho de pulso)</td></tr>
+          <tr><td><strong>BJT</strong></td><td>Bipolar Junction Transistor</td></tr>
+          <tr><td><strong>MOSFET</strong></td><td>Metal-Oxide-Semiconductor Field-Effect Transistor</td></tr>
+          <tr><td><strong>NMOS/PMOS</strong></td><td>N-channel / P-channel MOSFET</td></tr>
+          <tr><td><strong>NPN/PNP</strong></td><td>Tipos de BJT (por capas de semiconductor)</td></tr>
+          <tr><td><strong>PCB</strong></td><td>Printed Circuit Board</td></tr>
+          <tr><td><strong>GPIO</strong></td><td>General Purpose Input/Output (pin del micro)</td></tr>
+          <tr><td><strong>RTOS</strong></td><td>Real-Time Operating System</td></tr>
+          <tr><td><strong>RTC</strong></td><td>Real-Time Clock</td></tr>
+          <tr><td><strong>DO-178C</strong></td><td>Estándar de software para aviación</td></tr>
+          <tr><td><strong>DO-160G</strong></td><td>Estándar de tests ambientales/EMC para aviación</td></tr>
+          <tr><td><strong>eVTOL</strong></td><td>electric Vertical Take-Off and Landing</td></tr>
+          <tr><td><strong>MCU</strong></td><td>Microcontroller Unit</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="sub-title">Parámetros y símbolos de componentes</div>
+    <div class="two-col">
+      <div>
+        <table>
+          <tr><th>Símbolo</th><th>Nombre completo</th><th>Contexto</th></tr>
+          <tr><td><code>V_f</code></td><td>Forward voltage</td><td>Caída de voltaje del diodo en directa</td></tr>
+          <tr><td><code>V_BR</code></td><td>Breakdown voltage</td><td>Voltaje de ruptura inversa del diodo</td></tr>
+          <tr><td><code>V_ref</code></td><td>Reference voltage</td><td>Voltaje de referencia del ADC (rango total)</td></tr>
+          <tr><td><code>V_T</code></td><td>Thermal voltage</td><td>kT/q ≈ 26mV a 25°C</td></tr>
+          <tr><td><code>I_s</code></td><td>Saturation current</td><td>Corriente de fuga inversa del diodo (~pA)</td></tr>
+          <tr><td><code>β (beta)</code></td><td>Current gain (h_FE)</td><td>I_C / I_B del BJT (100-300 típico)</td></tr>
+          <tr><td><code>V_BE</code></td><td>Base-Emitter voltage</td><td>~0.7V para encender BJT</td></tr>
+          <tr><td><code>V_CE(sat)</code></td><td>Collector-Emitter saturation V</td><td>~0.2V cuando BJT está ON</td></tr>
+          <tr><td><code>I_B, I_C, I_E</code></td><td>Base / Collector / Emitter current</td><td>Las tres corrientes del BJT</td></tr>
+          <tr><td><code>f_s</code></td><td>Sampling frequency</td><td>Tasa de muestreo del ADC</td></tr>
+          <tr><td><code>f_max</code></td><td>Maximum signal frequency</td><td>Frecuencia más alta en la señal</td></tr>
+          <tr><td><code>f_c</code></td><td>Cutoff frequency</td><td>Frecuencia de corte del filtro</td></tr>
+        </table>
+      </div>
+      <div>
+        <table>
+          <tr><th>Símbolo</th><th>Nombre completo</th><th>Contexto</th></tr>
+          <tr><td><code>V_GS</code></td><td>Gate-Source voltage</td><td>Voltaje de control del MOSFET</td></tr>
+          <tr><td><code>V_th</code></td><td>Threshold voltage</td><td>V_GS mínimo para conducir (1-3V)</td></tr>
+          <tr><td><code>R_DS(on)</code></td><td>Drain-Source ON resistance</td><td>Resistencia del MOSFET encendido (mΩ)</td></tr>
+          <tr><td><code>V_DS</code></td><td>Drain-Source voltage</td><td>Caída a través del MOSFET</td></tr>
+          <tr><td><code>Q_g</code></td><td>Gate charge</td><td>Carga para encender gate (afecta velocidad)</td></tr>
+          <tr><td><code>R_f</code></td><td>Feedback resistance</td><td>Resistencia de realimentación (op-amp)</td></tr>
+          <tr><td><code>R_in</code></td><td>Input resistance</td><td>Resistencia de entrada (op-amp)</td></tr>
+          <tr><td><code>R_B</code></td><td>Base resistance</td><td>Resistencia entre GPIO y Base del BJT</td></tr>
+          <tr><td><code>A_v</code></td><td>Voltage gain</td><td>Ganancia de voltaje (op-amp)</td></tr>
+          <tr><td><code>A_OL</code></td><td>Open-Loop gain</td><td>Ganancia sin realimentación (op-amp)</td></tr>
+          <tr><td><code>Z_in, Z_out</code></td><td>Input/Output impedance</td><td>Resistencia efectiva de entrada/salida</td></tr>
+          <tr><td><code>η (eta)</code></td><td>Efficiency</td><td>Eficiencia del regulador (P_out/P_in)</td></tr>
+          <tr><td><code>D</code></td><td>Duty cycle</td><td>Fracción de tiempo ON del switching (0-1)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="sub-title">Unidades comunes</div>
+    <table>
+      <tr><th>Unidad</th><th>Significado</th><th>Ejemplo de uso</th></tr>
+      <tr><td><strong>dB</strong></td><td>Decibel (escala logarítmica de razón)</td><td>SNR = 60 dB → señal es 1000× mayor que ruido</td></tr>
+      <tr><td><strong>SPS / kSPS / MSPS</strong></td><td>Samples Per Second (k=×1000, M=×1M)</td><td>ADC de 1 MSPS toma 1 millón de muestras/seg</td></tr>
+      <tr><td><strong>pF / nF / µF</strong></td><td>pico / nano / micro Farad (capacitancia)</td><td>100nF = capacitor de desacoplo estándar</td></tr>
+      <tr><td><strong>mΩ / Ω / kΩ / MΩ</strong></td><td>mili / — / kilo / mega Ohm (resistencia)</td><td>R_DS(on) = 25mΩ, R_B = 270Ω</td></tr>
+      <tr><td><strong>mA / µA</strong></td><td>mili / micro Ampere (corriente)</td><td>MCU consume 30mA activo, 5µA en standby</td></tr>
+      <tr><td><strong>mV / µV</strong></td><td>mili / micro Volt</td><td>LSB 12-bit = 0.806mV, termocupla = µV</td></tr>
+    </table>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- FÓRMULAS MAESTRAS -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="section" style="border-color: var(--accent-cyan);">
+  <div class="section-header" style="background:linear-gradient(90deg,rgba(57,217,217,0.12),transparent); border-bottom:1px solid rgba(57,217,217,0.2); color:var(--accent-cyan);">
+    <span class="num">Σ</span> Todas las fórmulas del Módulo 2
+  </div>
+  <div class="section-body">
+    <div class="card-grid">
+      <div class="card">
+        <h4 style="color:var(--accent-cyan)">Diodos y transistores</h4>
+        <div class="formula cyan">
+R_LED = (V_GPIO − V_f) / I_f
+I_B = I_C / β_forzado  (β_f = 10)
+R_B = (V_GPIO − 0.7) / I_B
+P_MOSFET = I² × R_DS(on)
+V_GS = V_Gate − V_Source</div>
+      </div>
+      <div class="card">
+        <h4 style="color:var(--accent-purple)">Op-amps</h4>
+        <div class="formula purple">
+Inversor:  V_out = −(R_f/R_in) × V_in
+No-inv:    V_out = (1+R_f/R_in) × V_in
+Buffer:    V_out = V_in
+Diferenc:  V_out = (R_f/R1)(V2−V1)
+Filtro LP: f_c = 1/(2π × R_f × C)</div>
+      </div>
+      <div class="card">
+        <h4 style="color:var(--accent-green)">ADC/DAC</h4>
+        <div class="formula green">
+LSB = V_ref / 2^N
+V = código × LSB
+código = V_in × 2^N / V_ref
+f_s ≥ 2 × f_max  (Nyquist)
+SNR = 6.02N + 1.76 dB</div>
+      </div>
+      <div class="card">
+        <h4 style="color:var(--accent-yellow)">Reguladores y ruido</h4>
+        <div class="formula yellow">
+P_LDO = (V_in − V_out) × I_out
+η_LDO = V_out / V_in
+V_buck = D × V_in  (D = duty)
+SNR = 20 × log₁₀(Vs/Vn) dB
+ruido_avg = ruido / √N</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- TRAMPAS DE ENTREVISTA -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="section" style="border-color: var(--accent-red);">
+  <div class="section-header" style="background:linear-gradient(90deg,rgba(248,81,73,0.12),transparent); border-bottom:1px solid rgba(248,81,73,0.2); color:var(--accent-red);">
+    <span class="num">🪤</span> Malentendidos y trampas de entrevista
+  </div>
+  <div class="section-body">
+    <table>
+      <tr><th>Malentendido</th><th>Realidad</th></tr>
+      <tr><td>"Diodo siempre cae 0.7V"</td><td>Schottky ~0.3V, LED 1.8-3.2V, Ge ~0.3V</td></tr>
+      <tr><td>"Uso β del datasheet para R_B"</td><td>Usar β_forzado = 10 siempre</td></tr>
+      <tr><td style="color:var(--accent-red)">"Saturación" = lo mismo en BJT y MOSFET</td><td>BJT sat = ON. MOSFET sat = amplificador. <strong>OPUESTOS</strong></td></tr>
+      <tr><td>"Filtro pasa-bajos filtra voltajes altos"</td><td>Filtra <strong>frecuencias</strong> altas, no voltajes</td></tr>
+      <tr><td>"Puedo arreglar aliasing en firmware"</td><td><strong>Imposible.</strong> Irreversible después del ADC</td></tr>
+      <tr><td>"Switching siempre &gt; LDO"</td><td>LDO es mejor para ADCs (bajo ruido)</td></tr>
+      <tr><td>"Código máximo ADC = V_ref"</td><td>Es V_ref − 1 LSB</td></tr>
+      <tr><td>"Resolución = precisión"</td><td>ENOB &lt; bits nominales por ruido</td></tr>
+      <tr><td>"Op-amp hace V+ = V−"</td><td>La <em>realimentación negativa</em> fuerza el equilibrio</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- FOOTER -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="footer">
+  Módulo 2 — Circuitos Analógicos Esenciales · Aeronautical SW / Joby Aviation · Mayo 2026<br>
+  <span style="color:var(--text3)">Horowitz & Hill · Sedra & Smith · TI App Notes · Henry Ott EMC · DO-160G</span>
+</div>
+
+</div>
+</body>
+</html>

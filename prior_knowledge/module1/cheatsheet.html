@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Módulo 1 — Circuitos Lógicos Cheat Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0f14;
+    --surface: #151a23;
+    --surface2: #1c2230;
+    --border: #2a3040;
+    --accent: #4fc3f7;
+    --accent2: #ab47bc;
+    --accent3: #66bb6a;
+    --accent4: #ffa726;
+    --accent5: #ef5350;
+    --text: #e0e4ec;
+    --text-dim: #8a92a4;
+    --text-bright: #ffffff;
+    --formula-bg: #1a1f2e;
+    --warn-bg: #2a1a1a;
+    --warn-border: #ef535080;
+    --tip-bg: #1a2a1a;
+    --tip-border: #66bb6a80;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 20px;
+  }
+
+  .page-header {
+    text-align: center;
+    padding: 24px 0 16px;
+    border-bottom: 2px solid var(--accent);
+    margin-bottom: 24px;
+  }
+  .page-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-bright);
+    letter-spacing: -0.5px;
+  }
+  .page-header .subtitle {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    font-size: 12px;
+    margin-top: 4px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 16px;
+  }
+  .grid.single { grid-template-columns: 1fr; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .card.c1::before { background: var(--accent); }
+  .card.c2::before { background: var(--accent2); }
+  .card.c3::before { background: var(--accent3); }
+  .card.c4::before { background: var(--accent4); }
+  .card.c5::before { background: var(--accent5); }
+
+  .card h2 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card h2 .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+  .tag-interview { background: var(--accent5); color: white; }
+  .tag-core { background: var(--accent); color: #000; }
+  .tag-hw { background: var(--accent4); color: #000; }
+
+  .card h3 {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 10px 0 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .formula {
+    background: var(--formula-bg);
+    border-left: 3px solid var(--accent);
+    padding: 8px 12px;
+    margin: 6px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    border-radius: 0 6px 6px 0;
+    color: var(--text-bright);
+    overflow-x: auto;
+  }
+
+  .warn {
+    background: var(--warn-bg);
+    border-left: 3px solid var(--accent5);
+    padding: 8px 12px;
+    margin: 6px 0;
+    border-radius: 0 6px 6px 0;
+    font-size: 12px;
+  }
+  .warn strong { color: var(--accent5); }
+
+  .tip {
+    background: var(--tip-bg);
+    border-left: 3px solid var(--accent3);
+    padding: 8px 12px;
+    margin: 6px 0;
+    border-radius: 0 6px 6px 0;
+    font-size: 12px;
+  }
+  .tip strong { color: var(--accent3); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 6px 0;
+    font-size: 12px;
+  }
+  th {
+    background: var(--surface2);
+    color: var(--accent);
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  th, td {
+    padding: 5px 8px;
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+  td { color: var(--text); }
+  tr:nth-child(even) td { background: var(--surface2); }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    background: var(--surface2);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--accent);
+  }
+
+  .pre-block {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    line-height: 1.6;
+    margin: 6px 0;
+    overflow-x: auto;
+    white-space: pre;
+    color: var(--text);
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .section-divider {
+    text-align: center;
+    padding: 12px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+  }
+
+  .hl { color: var(--accent); font-weight: 600; }
+  .hl2 { color: var(--accent2); font-weight: 600; }
+  .hl3 { color: var(--accent3); font-weight: 600; }
+  .hl4 { color: var(--accent4); font-weight: 600; }
+  .hl5 { color: var(--accent5); font-weight: 600; }
+
+  .compact { font-size: 12px; line-height: 1.45; }
+  .compact p { margin: 3px 0; }
+
+  .circuit-ascii {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    line-height: 1.4;
+    color: var(--accent3);
+    margin: 4px 0;
+    white-space: pre;
+  }
+
+  .flex-row { display: flex; gap: 12px; align-items: flex-start; }
+  .flex-row > * { flex: 1; }
+
+  @media (max-width: 700px) {
+    .grid { grid-template-columns: 1fr; }
+    .two-col { grid-template-columns: 1fr; }
+    .flex-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Módulo 1 · Circuitos Lógicos</h1>
+  <div class="subtitle">CHEAT SHEET — Aeronautical SW Embedded SW Engineer Prep</div>
+</div>
+
+<!-- ═══════════════════ SECTION 1.1 ═══════════════════ -->
+<div class="section-divider">── 1.1 SISTEMAS NUMÉRICOS Y REPRESENTACIÓN ──</div>
+
+<div class="grid">
+  <div class="card c1">
+    <h2>Conversiones Rápidas <span class="tag tag-core">core</span></h2>
+    <div class="compact">
+      <p><span class="hl">Bin→Hex:</span> agrupar 4 bits desde la derecha. <code>1101 0011</code> → <code>0xD3</code></p>
+      <p><span class="hl">Hex→Bin:</span> cada dígito hex → 4 bits. <code>0xA7</code> → <code>1010 0111</code></p>
+      <p><span class="hl">Bin→Dec:</span> sumar potencias de 2 donde hay 1</p>
+      <p><span class="hl">BCD ≠ Binario:</span> 47 BCD = <code>0100 0111</code>, 47 bin = <code>00101111</code></p>
+    </div>
+    <h3>Shifts = Multiplicación/División</h3>
+    <div class="formula">x &lt;&lt; n = x × 2ⁿ    (más rápido que multiplicar)
+x &gt;&gt; n = x / 2ⁿ    (⚠ signed: aritmético vs lógico)</div>
+  </div>
+
+  <div class="card c5">
+    <h2>Complemento a 2 <span class="tag tag-interview">entrevista</span></h2>
+    <div class="compact">
+      <p><span class="hl5">Obtención:</span> invertir todos los bits + sumar 1</p>
+      <p><span class="hl5">Ventaja:</span> mismo circuito sumador para suma y resta</p>
+      <p><span class="hl5">MSB = signo</span> (0=+, 1=−), pero NO es signo-magnitud</p>
+    </div>
+    <table>
+      <tr><th>Tipo C</th><th>Bits</th><th>Unsigned</th><th>Signed</th></tr>
+      <tr><td><code>uint8/int8</code></td><td>8</td><td>0 – 255</td><td>−128 – 127</td></tr>
+      <tr><td><code>uint16/int16</code></td><td>16</td><td>0 – 65535</td><td>−32768 – 32767</td></tr>
+      <tr><td><code>uint32/int32</code></td><td>32</td><td>0 – 4.29×10⁹</td><td>−2.15×10⁹ – 2.15×10⁹</td></tr>
+    </table>
+    <div class="warn"><strong>⚠ Overflow:</strong> unsigned wrap-around está definido (módulo 2ⁿ). Signed overflow = <strong>undefined behavior</strong> en C. MISRA C prohíbe confiar en él.</div>
+  </div>
+
+  <div class="card c4">
+    <h2>Punto Flotante & Punto Fijo <span class="tag tag-hw">hw/sw</span></h2>
+    <div class="compact">
+      <p><span class="hl4">IEEE 754 (32-bit):</span> [1 signo][8 exp][23 mantisa]</p>
+    </div>
+    <div class="formula">Valor = (-1)ˢ × 1.M × 2^(E-127)</div>
+    <div class="warn"><strong>⚠ NUNCA</strong> comparar floats con <code>==</code>. Usar <code>fabs(a-b) &lt; ε</code>. MISRA lo prohíbe.</div>
+    <h3>Punto Fijo (alternativa sin FPU)</h3>
+    <div class="compact">
+      <p>Q8.8: 3.75 × 256 = 960. Operás con enteros (rápido, determinista).</p>
+      <p>Sumar: directo. Multiplicar: resultado en Q16.16 → shift derecho para volver a Q8.8.</p>
+    </div>
+    <div class="tip"><strong>→ Aviónica:</strong> sistemas de control de vuelo usan punto fijo por velocidad y determinismo.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SECTION 1.2 ═══════════════════ -->
+<div class="section-divider">── 1.2 ÁLGEBRA BOOLEANA ──</div>
+
+<div class="grid">
+  <div class="card c2">
+    <h2>Operaciones & Compuertas</h2>
+    <table>
+      <tr><th>Op</th><th>Símbolo</th><th>C bitwise</th><th>Regla</th></tr>
+      <tr><td>AND</td><td>·</td><td><code>a & b</code></td><td>1 si todos 1</td></tr>
+      <tr><td>OR</td><td>+</td><td><code>a | b</code></td><td>1 si alguno 1</td></tr>
+      <tr><td>NOT</td><td>'</td><td><code>~a</code></td><td>Invierte</td></tr>
+      <tr><td>XOR</td><td>⊕</td><td><code>a ^ b</code></td><td>1 si diferentes</td></tr>
+      <tr><td>NAND</td><td>(·)'</td><td><code>~(a&b)</code></td><td>Universal: todo se construye con NANDs</td></tr>
+    </table>
+    <h3>DeMorgan — el más importante</h3>
+    <div class="formula">(A·B)' = A' + B'      (A+B)' = A' · B'
+!(a && b) ↔ !a || !b   !(a || b) ↔ !a && !b</div>
+    <h3>NAND como Universal (4 transistores)</h3>
+    <div class="compact">
+      <p><span class="hl2">NOT:</span> NAND(A,A) = A'</p>
+      <p><span class="hl2">AND:</span> NAND + NOT = 2 NANDs</p>
+      <p><span class="hl2">OR:</span> DeMorgan → 3 NANDs</p>
+      <p>En CMOS: NAND=4T, AND=6T. Herramientas de síntesis convierten todo a NAND.</p>
+    </div>
+  </div>
+
+  <div class="card c2">
+    <h2>Teoremas Clave</h2>
+    <div class="formula">Identidad:    A+0=A      A·1=A
+Nulo:         A+1=1      A·0=0
+Complemento:  A+A'=1     A·A'=0
+Idempotencia: A+A=A      A·A=A
+Involución:   (A')'=A
+Absorción:    A+AB=A     A(A+B)=A
+Distributiva: A+BC=(A+B)(A+C)  ←especial</div>
+
+    <h3>SOP vs POS — Cuándo usar cada uno</h3>
+    <div class="tip"><strong>Regla:</strong> Contá 1s y 0s en la tabla de verdad.<br>
+    • Más 0s que 1s → <strong>SOP</strong> (menos mintérminos)<br>
+    • Más 1s que 0s → <strong>POS</strong> (menos maxtérminos)<br>
+    • Parejos → hacer K-map de ambos y comparar</div>
+    <div class="compact">
+      <p><span class="hl">SOP</span> (Σ mintérminos): filas F=1, AND de variables, OR de términos → AND-OR / NAND-NAND</p>
+      <p><span class="hl">POS</span> (Π maxtérminos): filas F=0, OR de variables <em>negadas</em>, AND de términos → OR-AND / NOR-NOR</p>
+    </div>
+  </div>
+
+  <div class="card c2" style="grid-column: 1 / -1;">
+    <h2>K-Maps — Referencia Rápida <span class="tag tag-core">core</span></h2>
+    <div class="two-col">
+      <div>
+        <h3>Reglas de Agrupación</h3>
+        <div class="compact">
+          <p>1. Orden <span class="hl">Gray</span> (00,01,11,10) — NO binario</p>
+          <p>2. Grupos: rectángulos de 1, 2, 4, 8, 16...</p>
+          <p>3. Envuelve bordes (toroide)</p>
+          <p>4. Grupos lo más grandes posible</p>
+          <p>5. Superponer OK — todo 1 cubierto al menos una vez</p>
+          <p>6. Don't cares (X): usar como 0 o 1 para agrandar grupos</p>
+          <p>7. Variables constantes en grupo → quedan. Variables que cambian → se eliminan</p>
+        </div>
+      </div>
+      <div>
+        <h3>K-Map 4 Variables</h3>
+<div class="pre-block">        CD: 00  01  11  10
+AB=00  │ m0 │ m1 │ m3 │ m2 │
+AB=01  │ m4 │ m5 │ m7 │ m6 │
+AB=11  │m12 │m13 │m15 │m14 │
+AB=10  │ m8 │ m9 │m11 │m10 │</div>
+        <div class="compact">
+          <p><span class="hl">Código Gray:</span> consecutivos difieren en 1 bit. Evita glitches en transiciones.</p>
+          <p><span class="hl">Usos:</span> K-maps, encoders rotativos, cruces de clock domain (FIFOs).</p>
+          <p><span class="hl">Bin→Gray:</span> G[n]=B[n], G[i]=B[i+1]⊕B[i]</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SECTION 1.3 ═══════════════════ -->
+<div class="section-divider">── 1.3 COMPUERTAS, TRANSISTORES Y NIVELES ──</div>
+
+<div class="grid">
+  <div class="card c3">
+    <h2>CMOS — Transistores <span class="tag tag-interview">entrevista</span></h2>
+    <div class="two-col">
+      <div>
+        <h3>NMOS</h3>
+        <div class="compact">
+          <p>Conduce con <strong>Gate = 1</strong></p>
+          <p>Pull-down (Source → GND)</p>
+          <p>Portadores: <span class="hl3">electrones</span></p>
+          <p>Movilidad: ~1350 cm²/V·s</p>
+          <p><strong>Más rápido</strong></p>
+        </div>
+      </div>
+      <div>
+        <h3>PMOS</h3>
+        <div class="compact">
+          <p>Conduce con <strong>Gate = 0</strong></p>
+          <p>Pull-up (Source → VDD)</p>
+          <p>Portadores: <span class="hl4">huecos</span></p>
+          <p>Movilidad: ~480 cm²/V·s</p>
+          <p>Se hace 2-3× más ancho</p>
+        </div>
+      </div>
+    </div>
+    <div class="tip"><strong>NMOS más rápido porque:</strong> electrones tienen ~2.8× más movilidad que huecos en Si. Mayor movilidad → más corriente → carga capacitancias más rápido. Por eso NAND (NMOS en serie en pull-down) > NOR (PMOS en serie en pull-up).</div>
+
+    <h3>Inversor CMOS</h3>
+<div class="pre-block">      VDD
+       │
+   ┌───┤ PMOS (conduce si In=0)
+   │   │
+In─┤   ├── Out
+   │   │
+   └───┤ NMOS (conduce si In=1)
+       │
+      GND</div>
+    <div class="compact">
+      <p>Consumo estático ≈ 0 (nunca ambos conducen simultáneamente).</p>
+      <p><span class="hl3">Usos del inversor:</span> NOT lógico, <strong>buffer/repeater</strong> (regenera señales degradadas en líneas largas), oscilador de anillo (# impar en loop), celda SRAM (2 inversores cruzados).</p>
+    </div>
+  </div>
+
+  <div class="card c3">
+    <h2>NAND CMOS — Anatomía</h2>
+<div class="pre-block">         VDD
+        / \
+   PMOS_A  PMOS_B   ← PARALELO (cualquier 0 → Out=1)
+        \ /
+         ├── Out
+         │
+      NMOS_A         ← SERIE (ambos 1 → Out=0)
+         │
+      NMOS_B
+         │
+        GND</div>
+    <div class="compact">
+      <p>4 transistores. AND necesitaría NAND+INV = 6T.</p>
+      <p>NAND es la compuerta <strong>natural</strong> y más eficiente en CMOS.</p>
+    </div>
+
+    <h3>Niveles Lógicos</h3>
+    <table>
+      <tr><th>Param</th><th>Significado</th><th>3.3V típico</th></tr>
+      <tr><td>V<sub>OH</sub></td><td>Salida High mín</td><td>~2.4V</td></tr>
+      <tr><td>V<sub>OL</sub></td><td>Salida Low máx</td><td>~0.4V</td></tr>
+      <tr><td>V<sub>IH</sub></td><td>Entrada reconoce 1</td><td>~2.0V</td></tr>
+      <tr><td>V<sub>IL</sub></td><td>Entrada reconoce 0</td><td>~0.8V</td></tr>
+    </table>
+    <div class="formula">NM_H = V_OH − V_IH   NM_L = V_IL − V_OL</div>
+    <div class="warn"><strong>⚠ 5V → 3.3V:</strong> sin level shifter/divisor de voltaje = daño al chip. Soluciones: divisor resistivo (lento, unidireccional), MOSFET shifter (bidireccional), chip dedicado (TXS0108E, profesional).</div>
+  </div>
+
+  <div class="card c3">
+    <h2>Timing & Frecuencia <span class="tag tag-core">core</span></h2>
+    <div class="formula">f = 1/T        T = 1/f</div>
+    <table>
+      <tr><th>Período</th><th>Frecuencia</th></tr>
+      <tr><td>1 μs</td><td>1 MHz</td></tr>
+      <tr><td>100 ns</td><td>10 MHz</td></tr>
+      <tr><td>10 ns</td><td>100 MHz</td></tr>
+      <tr><td>1 ns</td><td>1 GHz</td></tr>
+    </table>
+    <h3>Limitantes de frecuencia máxima</h3>
+    <div class="compact">
+      <p>• Critical path (delay combinacional más largo)</p>
+      <p>• Setup time de flip-flops</p>
+      <p>• Clock skew (reloj no llega simultáneamente)</p>
+      <p>• Potencia: P = C·V²·f (crece con f)</p>
+      <p>• EMI (radiación crece con f — DO-160 en aviónica)</p>
+      <p>• Integridad de señal / capacitancia de carga</p>
+      <p>• Temperatura (transistores más lentos en caliente)</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SECTION 1.4 ═══════════════════ -->
+<div class="section-divider">── 1.4 CIRCUITOS COMBINACIONALES ──</div>
+
+<div class="grid">
+  <div class="card c1">
+    <h2>MUX — Función Universal <span class="tag tag-interview">entrevista</span></h2>
+    <div class="formula">MUX 2:1  →  Y = S'·I0 + S·I1
+MUX 4:1  →  Y = S1'S0'·I0 + S1'S0·I1 + S1S0'·I2 + S1S0·I3</div>
+    <div class="compact">
+      <p>MUX 2ⁿ:1 implementa <strong>cualquier</strong> función de N variables = <strong>tabla de verdad en hardware = LUT de FPGA</strong>.</p>
+    </div>
+    <h3>Truco: N+1 vars con MUX 2ⁿ:1</h3>
+    <div class="compact">
+      <p>Para F(A,B,C) con MUX 4:1 (selectores A,B): por cada combo AB, evaluar F vs C:</p>
+    </div>
+    <table>
+      <tr><th>Si C=0→</th><th>y C=1→</th><th>Conectar a:</th></tr>
+      <tr><td>0</td><td>0</td><td><code>GND</code> (0)</td></tr>
+      <tr><td>0</td><td>1</td><td><code>C</code></td></tr>
+      <tr><td>1</td><td>0</td><td><code>C'</code></td></tr>
+      <tr><td>1</td><td>1</td><td><code>VDD</code> (1)</td></tr>
+    </table>
+    <div class="tip"><strong>→ Embedded:</strong> MUX de alternate function en pines del micro (un pin puede ser GPIO, UART TX, SPI MOSI — el registro de AF configura el MUX interno).</div>
+  </div>
+
+  <div class="card c1">
+    <h2>Decodificador, Encoder, Sumadores</h2>
+    <h3>Decodificador N:2ⁿ</h3>
+    <div class="compact">
+      <p>N bits → 2ⁿ salidas, solo una activa. Cada salida = AND de variables (comp. o no).</p>
+      <p><span class="hl">App:</span> decodificación de direcciones de memoria (selecciona chip/periférico).</p>
+    </div>
+    <h3>Priority Encoder</h3>
+    <div class="compact">
+      <p>2ⁿ entradas → N salidas. Codifica la entrada de mayor prioridad.</p>
+      <p><span class="hl">App:</span> controlador de interrupciones (NVIC en ARM).</p>
+    </div>
+    <h3>Sumadores</h3>
+    <div class="formula">Half:  Sum=A⊕B        Carry=A·B
+Full:  Sum=A⊕B⊕Cin   Cout=A·B+Cin·(A⊕B)</div>
+    <div class="compact">
+      <p><strong>Ripple carry:</strong> N full adders en cadena. Simple, lento (carry propaga en serie).</p>
+      <p><strong>Carry lookahead:</strong> G=A·B, P=A⊕B. Carries en paralelo. Rápido, más HW.</p>
+      <p><strong>ALU</strong> = sumador + control → AND, OR, XOR, +, −, CMP.</p>
+    </div>
+    <h3>Comparador (Flags)</h3>
+    <div class="compact"><p>Internamente hace A−B, evalúa flags:</p></div>
+    <table>
+      <tr><th>Flag</th><th>Significado</th></tr>
+      <tr><td>Z (Zero)</td><td>Resultado=0 → A==B</td></tr>
+      <tr><td>C (Carry)</td><td>Borrow en unsigned</td></tr>
+      <tr><td>N (Negative)</td><td>MSB del resultado</td></tr>
+      <tr><td>V (Overflow)</td><td>Overflow signed</td></tr>
+    </table>
+    <div class="formula">A==B: Z=1   A>B(uns): C=1,Z=0   A<B(sig): N≠V</div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SECTION 1.5 ═══════════════════ -->
+<div class="section-divider">── 1.5 CIRCUITOS SECUENCIALES ──</div>
+
+<div class="grid">
+  <div class="card c4">
+    <h2>Latch vs Flip-Flop <span class="tag tag-interview">entrevista</span></h2>
+    <div class="two-col">
+      <div>
+        <h3>Latch D</h3>
+        <div class="compact">
+          <p>Enable=1 → Q sigue a D (<strong>transparente</strong>)</p>
+          <p>Enable=0 → Q mantiene</p>
+          <p>Problema: D cambia, Q cambia</p>
+        </div>
+      </div>
+      <div>
+        <h3>Flip-Flop D (Master-Slave)</h3>
+        <div class="compact">
+          <p>Solo captura en el <strong>borde</strong> del clock</p>
+          <p>Clk=0: master acepta D, slave bloqueado</p>
+          <p>Rising edge: master bloquea, slave abre</p>
+          <p>Clk=1: D puede cambiar, Q inmune</p>
+        </div>
+      </div>
+    </div>
+    <h3>Setup & Hold Time</h3>
+    <div class="formula">D estable ANTES del borde ≥ t_setup
+D estable DESPUÉS del borde ≥ t_hold
+Violar → METAESTABILIDAD</div>
+    <h3>¿Por qué D domina sobre JK?</h3>
+    <div class="compact">
+      <p>D: 1 entrada, Q=D en borde. Simple, verificable, herramientas optimizadas para D.</p>
+      <p>JK: 2 entradas, 4 modos (hold/set/reset/toggle). Era útil en diseño manual. Hoy irrelevante — los FFs físicos en FPGA/ASIC son tipo D.</p>
+    </div>
+    <h3>Flip-Flop T</h3>
+    <div class="compact">
+      <p>T=1 → toggle en cada borde = <strong>divisor de frecuencia ÷2</strong> (no es oscilador libre — necesita clock externo).</p>
+      <p>T=0 → hold. Base de contadores binarios.</p>
+    </div>
+  </div>
+
+  <div class="card c4">
+    <h2>Metaestabilidad & Sincronización <span class="tag tag-hw">hw</span></h2>
+    <div class="compact">
+      <p>No se "limpia" — se <strong>mitiga</strong> con sincronizador:</p>
+    </div>
+<div class="pre-block">Señal async → [FF1] → [FF2] → Señal sync
+                │        │
+              Clock    Clock</div>
+    <div class="compact">
+      <p>FF1 puede metaestabilizar, pero tiene T_clock para resolverse. P(fallo) = e^(−T/τ) ≈ ridículamente bajo.</p>
+      <p>Triple FF para aviónica: 3 ciclos latencia, probabilidad aún menor.</p>
+    </div>
+    <div class="warn"><strong>⚠ Regla:</strong> toda señal que cruza clock domain o viene del exterior → sincronizador de ≥2 FF. En aviónica no es opcional.</div>
+
+    <h3>Shift Registers</h3>
+    <table>
+      <tr><th>Tipo</th><th>In</th><th>Out</th><th>Uso</th></tr>
+      <tr><td>SISO</td><td>Serial</td><td>Serial</td><td>Línea de retardo</td></tr>
+      <tr><td>SIPO</td><td>Serial</td><td>Parallel</td><td>Receptor SPI/UART</td></tr>
+      <tr><td>PISO</td><td>Parallel</td><td>Serial</td><td>Transmisor SPI</td></tr>
+      <tr><td>LFSR</td><td>XOR feedback</td><td>—</td><td>CRC, PRBS, scrambling</td></tr>
+    </table>
+    <div class="compact"><p><strong>JTAG:</strong> shift register global para debugging de PCBs.</p></div>
+
+    <h3>Contadores</h3>
+    <div class="compact">
+      <p><strong>Async (ripple):</strong> clock solo al 1er FF. Simple pero glitches (bits no cambian juntos). Solo si velocidad no importa.</p>
+      <p><strong>Sync:</strong> mismo clock a todos. Sin glitches. Úsalo siempre. Apps: timer, PWM, watchdog, PC.</p>
+    </div>
+  </div>
+
+  <div class="card c4" style="grid-column: 1 / -1;">
+    <h2>FSM — Máquinas de Estado <span class="tag tag-interview">entrevista</span></h2>
+    <div class="two-col">
+      <div>
+        <h3>Moore vs Mealy</h3>
+        <div class="compact">
+          <p><strong>Moore:</strong> salida = f(estado). Más predecible. Cambia 1 ciclo después.</p>
+          <p><strong>Mealy:</strong> salida = f(estado, entrada). Más rápida pero posibles glitches.</p>
+        </div>
+        <h3>Diseño Síncrono</h3>
+        <div class="formula">T_clk > t_prop(FF) + t_delay(comb) + t_setup(FF)</div>
+        <div class="compact">
+          <p>Violación = timing violation = datos incorrectos.</p>
+          <p>Clock domains: sincronizadores o FIFOs Gray entre dominios.</p>
+        </div>
+      </div>
+      <div>
+        <h3>Recovery States — Obligatorio en aviónica</h3>
+        <div class="compact">
+          <p>1. Estado <code>ERROR</code> explícito en el diagrama</p>
+          <p>2. <code>default:</code> en switch → ir a ERROR</p>
+          <p>3. Timeout por estado (watchdog) → ERROR si excede</p>
+          <p>4. One-hot: detectar estados inválidos con lógica</p>
+          <p>5. DO-178C: análisis exhaustivo de TODAS las transiciones</p>
+        </div>
+<div class="pre-block" style="font-size:10px">switch(state) {
+  case IDLE: ... break;
+  case RUN:  ... break;
+  case ERROR:
+    disable_outputs();
+    log_error(ERR_FSM);
+    state = IDLE;  break;
+  default:
+    state = ERROR; break; // ← nunca omitir
+}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SECTION 1.6 ═══════════════════ -->
+<div class="section-divider">── 1.6 MEMORIAS ──</div>
+
+<div class="grid">
+  <div class="card c5">
+    <h2>Tipos de Memoria</h2>
+    <table>
+      <tr><th>Tipo</th><th>Celda</th><th>Velocidad</th><th>Volátil</th><th>Ciclos escr.</th><th>Uso</th></tr>
+      <tr><td>SRAM</td><td>6T (2 inv. cruzados)</td><td>~1ns</td><td>Sí</td><td>∞</td><td>Cache, RAM micro</td></tr>
+      <tr><td>DRAM</td><td>1T+1C (refresh 64ms)</td><td>~50-100ns</td><td>Sí</td><td>∞</td><td>RAM principal DDR</td></tr>
+      <tr><td>Flash</td><td>1T floating gate</td><td>Media</td><td>No</td><td>10K-100K</td><td>Firmware, SSD</td></tr>
+      <tr><td>EEPROM</td><td>Floating gate</td><td>Lenta</td><td>No</td><td>100K-1M</td><td>Config, calibración</td></tr>
+    </table>
+    <div class="compact">
+      <p><strong>Flash se desgasta</strong> porque forzar electrones por el óxido (túnel cuántico) daña la estructura cristalina. Lectura NO desgasta.</p>
+      <p><strong>ROM</strong> = tabla de verdad en hardware (decodificador + matriz de conexiones).</p>
+    </div>
+  </div>
+
+  <div class="card c5">
+    <h2>Jerarquía de Memoria</h2>
+<div class="pre-block" style="font-size:10.5px">Registros     SRAM    ~32 regs    ~0.5ns    ← más rápido, más caro
+Cache L1      SRAM    32-64KB     ~1-2ns
+Cache L2      SRAM    256KB-1MB   ~3-10ns
+Cache L3      SRAM    2-64MB      ~10-30ns
+RAM           DRAM    4-128GB     ~50-100ns
+SSD           Flash   256GB-4TB   ~100μs
+HDD           Mag.    1-20TB      ~10ms     ← más lento, más barato</div>
+    <div class="compact">
+      <p><strong>Micro (STM32):</strong> Registros → Flash+ART cache → SRAM → (ext SDRAM/Flash)</p>
+    </div>
+  </div>
+
+  <div class="card c5" style="grid-column: 1 / -1;">
+    <h2>Mapa de Memoria ARM Cortex-M <span class="tag tag-interview">entrevista</span></h2>
+<div class="pre-block" style="font-size:10.5px">0x0000_0000  Flash         Código + constantes (.text, .rodata)
+0x2000_0000  SRAM          Variables, stack, heap (.data, .bss)
+0x4000_0000  Periféricos   UART, SPI, I2C, GPIO, ADC, timers (memory-mapped I/O)
+0xE000_0000  System        NVIC, SysTick, debug, MPU</div>
+    <div class="two-col">
+      <div>
+        <div class="compact">
+          <p><strong>Memory-mapped I/O:</strong> escribir a dirección de periférico = controlar hardware. Misma instrucción STR para RAM y GPIO.</p>
+          <p><strong>Linker script (.ld):</strong> .text→Flash, .data→RAM (copiado desde Flash por startup code), .bss→RAM (llenado con 0).</p>
+          <p><strong>MPU:</strong> protege regiones (read-only, privileged). Requerido por DO-178C.</p>
+        </div>
+      </div>
+      <div>
+        <h3><code>volatile</code> — Pregunta #1 en entrevistas</h3>
+        <div class="compact">
+          <p><strong>Qué hace:</strong> prohíbe al compilador cachear/optimizar accesos. Cada lectura/escritura en código → lectura/escritura real a memoria.</p>
+          <p><strong>Cuándo:</strong> registros HW, variables compartidas con ISR, variables RTOS, registros read-to-clear.</p>
+          <p><strong>Qué NO hace:</strong> no es atómico (ISR puede interrumpir entre bytes), no garantiza ordenamiento completo (usar memory barriers).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SECTION: ADVANCED TOPICS ═══════════════════ -->
+<div class="section-divider">── TEMAS AVANZADOS (SELLO MIT/TEC) ──</div>
+
+<div class="grid">
+  <div class="card c2">
+    <h2>Hazard Glitches <span class="tag tag-core">core</span></h2>
+    <div class="compact">
+      <p>Pulso espurio en la salida durante transición de entrada, causado por delays desiguales en caminos internos.</p>
+      <p><strong>Static-1 hazard:</strong> salida debería ser 1 pero baja momentáneamente a 0.</p>
+      <p><strong>Static-0 hazard:</strong> salida debería ser 0 pero sube momentáneamente a 1.</p>
+    </div>
+    <h3>Ejemplo y Solución</h3>
+    <div class="formula">F = AB + A'C    (hazard cuando A: 1→0, B=C=1)
+Fix: F = AB + A'C + BC   (término de consenso)</div>
+    <div class="compact">
+      <p><strong>En K-map:</strong> asegurar que todos los pares de 1s adyacentes estén cubiertos por al menos un grupo, aunque el grupo sea redundante.</p>
+    </div>
+    <div class="warn"><strong>⚠ Peligroso si:</strong> la salida combinacional alimenta un clock, enable o reset asíncrono. En lógica que alimenta D de un FF síncrono, generalmente no causa problemas (FF muestrea en el borde, no durante el glitch).</div>
+  </div>
+
+  <div class="card c2">
+    <h2>Representaciones de Signo</h2>
+    <table>
+      <tr><th>Método</th><th>−5 en 8 bits</th><th>Ceros</th><th>Hardware</th></tr>
+      <tr><td>Signo-magnitud</td><td><code>10000101</code></td><td>2 (+0, −0)</td><td>Complejo</td></tr>
+      <tr><td>Complemento a 1</td><td><code>11111010</code></td><td>2 (+0, −0)</td><td>End-around carry</td></tr>
+      <tr><td><strong>Complemento a 2</strong></td><td><code>11111011</code></td><td><strong>1</strong></td><td><strong>Simple (ganó)</strong></td></tr>
+    </table>
+    <div class="tip"><strong>Excepción:</strong> IEEE 754 (float) usa signo-magnitud internamente — el bit de signo es independiente. Esto es aceptable porque tiene hardware dedicado.</div>
+  </div>
+
+  <div class="card c1">
+    <h2>Detección y Corrección de Errores <span class="tag tag-hw">hw</span></h2>
+    <table>
+      <tr><th>Método</th><th>Detecta</th><th>Corrige</th><th>Uso</th></tr>
+      <tr><td>Paridad</td><td>1 bit</td><td>—</td><td>ARINC 429, buses, UART</td></tr>
+      <tr><td>Hamming(7,4)</td><td>2 bits</td><td>1 bit</td><td>Memorias ECC</td></tr>
+      <tr><td>SECDED</td><td>2 bits</td><td>1 bit</td><td>Servidores, aviónica</td></tr>
+      <tr><td>CRC</td><td>Ráfagas</td><td>—</td><td>Ethernet, USB, storage</td></tr>
+    </table>
+    <div class="compact">
+      <p><strong>Paridad:</strong> 1 bit extra → total de 1s par/impar. XOR de todos los bits.</p>
+      <p><strong>Hamming:</strong> bits de paridad en posiciones 2ⁿ. Cubren subconjuntos específicos. Síndrome = cuáles fallaron → indica bit erróneo.</p>
+      <p><strong>CRC:</strong> división de polinomios en GF(2) (aritmética XOR). Implementado con LFSR.</p>
+    </div>
+    <div class="tip"><strong>→ Aviónica:</strong> memorias con ECC obligatorias. ARINC 429 usa paridad impar. CRC en protocolos de datos.</div>
+  </div>
+
+  <div class="card c1">
+    <h2>Aritmética HW Adicional</h2>
+    <h3>Restador con Sumador</h3>
+    <div class="formula">A − B = A + NOT(B) + 1
+Cada bit de B pasa por XOR con señal SUB:
+  SUB=0 → B directo (suma)
+  SUB=1 → B invertido + Cin=1 (resta)</div>
+    <div class="compact"><p>Un solo sumador + XOR por bit + MUX = suma Y resta.</p></div>
+    <h3>Multiplicación Binaria</h3>
+<div class="pre-block" style="font-size:10px">    1101 (13)
+  × 1011 (11)
+  ------
+    1101   (AND con bit 0, shift 0)
+   1101    (AND con bit 1, shift 1)
+  0000     (AND con bit 2, shift 2)
+ 1101      (AND con bit 3, shift 3)
+--------
+10001111   (143)  →  N×N bits = 2N resultado</div>
+    <div class="compact">
+      <p>HW: arreglo de ANDs + árbol de sumadores (Wallace/Dadda tree).</p>
+      <p>Micros 8-bit sin multiplicador HW → software (shifts+sumas), lento.</p>
+    </div>
+  </div>
+
+  <div class="card c4" style="grid-column: 1 / -1;">
+    <h2>Tristate Buffers y Buses <span class="tag tag-interview">entrevista</span></h2>
+    <div class="two-col">
+      <div>
+        <h3>Tristate Buffer</h3>
+<div class="pre-block" style="font-size:10.5px">Enable=1 → Output = Data
+Enable=0 → Output = Hi-Z (desconectado)
+
+       Enable
+         │
+Data ──[▷── Output (0, 1, o Hi-Z)</div>
+        <div class="compact">
+          <p><strong>Buses compartidos:</strong> múltiples dispositivos en el mismo bus. Solo 1 habla a la vez, el resto en Hi-Z.</p>
+          <p><strong>Contención:</strong> dos dispositivos activos simultáneamente = cortocircuito → daño. Chip select (del decodificador) controla quién habla.</p>
+        </div>
+      </div>
+      <div>
+        <h3>Open-Drain / Open-Collector</h3>
+        <div class="compact">
+          <p>Salida solo puede tirar a GND (activa) o flotar (inactiva). Pull-up resistor externo compartido.</p>
+          <p><strong>Wired-AND:</strong> cualquier dispositivo puede tirar la línea a bajo.</p>
+          <p><span class="hl4">I2C:</span> SDA y SCL son open-drain. Múltiples masters posibles. Clock stretching (slave mantiene SCL bajo para pedir tiempo).</p>
+          <p><span class="hl4">Interrupciones:</span> múltiples fuentes comparten una línea IRQ con open-drain.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card c4" style="grid-column: 1 / -1;">
+    <h2>Diseño FSM Completo — Ejemplo Paso a Paso <span class="tag tag-core">core</span></h2>
+    <div class="compact"><p><strong>Problema:</strong> Detector de secuencia "110" en stream serial (Moore). Z=1 al detectar.</p></div>
+    <div class="two-col">
+      <div>
+        <h3>Diagrama de Estados</h3>
+<div class="pre-block" style="font-size:10px">S0(Z=0) ──1──→ S1(Z=0) ──1──→ S2(Z=0) ──0──→ S3(Z=1)
+  ↑  ↑←──0──┘     ↑←──1──┘               │
+  │  └─────0──────────────────────────────┘
+  └───────────────────0───────────────────┘
+S3 ──1──→ S1 (nuevo inicio)</div>
+        <h3>Asignación: S0=00 S1=01 S2=10 S3=11</h3>
+        <h3>Ecuaciones Simplificadas</h3>
+        <div class="formula">Q1+ = Q1·Q0' + Q1'·Q0·X
+Q0+ = Q0'·(Q1⊕X) + Q1·Q0·X
+Z   = Q1·Q0</div>
+      </div>
+      <div>
+        <h3>Tabla de Transición</h3>
+        <table>
+          <tr><th>Estado</th><th>X=0</th><th>X=1</th><th>Z</th></tr>
+          <tr><td>S0 (00)</td><td>S0</td><td>S1</td><td>0</td></tr>
+          <tr><td>S1 (01)</td><td>S0</td><td>S2</td><td>0</td></tr>
+          <tr><td>S2 (10)</td><td>S3</td><td>S2</td><td>0</td></tr>
+          <tr><td>S3 (11)</td><td>S0</td><td>S1</td><td>1</td></tr>
+        </table>
+        <h3>Implementación</h3>
+        <div class="compact">
+          <p>2× Flip-flop D + lógica combinacional para D1, D0, Z.</p>
+          <p><strong>Verificación:</strong> simular todas las secuencias de entrada. Probar: 1100 → Z=1 en t3. Probar: 1110 → Z=1 en t4.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card c3">
+    <h2>Timing Diagrams — Leer y Dibujar <span class="tag tag-interview">entrevista</span></h2>
+<div class="pre-block" style="font-size:10px">Clock ──┐  ┌──┐  ┌──┐  ┌──┐  ┌──
+        └──┘  └──┘  └──┘  └──┘
+
+D     ──────┐     ┌─────────────
+            └─────┘
+         t_su↑   ↑t_h
+              ↑ rising edge
+
+Q     ────────────┐     ┌───────
+                  └─────┘
+               t_prop↑</div>
+    <div class="compact">
+      <p>D debe estar estable t_su <strong>antes</strong> y t_h <strong>después</strong> del rising edge.</p>
+      <p>Q cambia t_prop <strong>después</strong> del rising edge.</p>
+      <p><strong>En datasheets:</strong> timing diagrams de SPI, I2C, UART muestran relaciones temporales entre SCLK, MOSI, MISO, CS. Saber leerlos = interpretar cualquier datasheet.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ ERRORES COMUNES ═══════════════════ -->
+<div class="section-divider">── ERRORES COMUNES ──</div>
+
+<div class="grid single">
+  <div class="card c5">
+    <h2>⚠ Trampas Frecuentes</h2>
+    <div class="two-col">
+      <div class="compact">
+        <p>1. Confundir BCD con binario puro</p>
+        <p>2. Signed overflow = UB en C (no confiar en wrap)</p>
+        <p>3. Usar <code>int</code> en vez de <code>uint32_t</code> en embedded</p>
+        <p>4. Comparar floats con <code>==</code></p>
+        <p>5. Orden binario en K-maps (debe ser Gray)</p>
+        <p>6. Olvidar que K-map envuelve bordes</p>
+        <p>7. Conectar 5V a pin 3.3V sin level shifter</p>
+        <p>8. Confundir latch (nivel) con flip-flop (borde)</p>
+      </div>
+      <div class="compact">
+        <p>9. Olvidar <code>volatile</code> en registros HW</p>
+        <p>10. No sincronizar señales entre clock domains</p>
+        <p>11. FSM sin <code>default</code> / estado de recovery</p>
+        <p>12. Asumir que lectura desgasta Flash (solo escritura)</p>
+        <p>13. No agregar término de consenso para eliminar hazards</p>
+        <p>14. Dos dispositivos activos en bus → contención</p>
+        <p>15. Olvidar paridad/ECC en buses de aviónica</p>
+        <p>16. Multiplicación N×N sin reservar 2N bits para resultado</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-divider" style="margin-top: 16px;">
+  ── REFERENCIAS: Mano <em>Digital Design</em> · Harris² <em>Digital Design & Computer Arch</em> · Patterson & Hennessy <em>CompOrg RISC-V</em> ──
+</div>
+
+</body>
+</html>
